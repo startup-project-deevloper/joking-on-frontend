@@ -1,5 +1,5 @@
 {
-  "name": "with-tailwindcss",
+  "name": "joking-on-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,13 +8,26 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.21",
+    "deepmerge": "^4.2.2",
+    "graphql": "^15.5.1",
+    "graphql-tag": "^2.12.5",
+    "js-cookie": "^2.2.1",
+    "jwt-decode": "^3.1.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "next": "latest",
+    "next-iron-session": "^4.2.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-transition-group": "^4.4.2",
+    "strapi-sdk-javascript": "^0.3.3",
+    "svg-url-loader": "^7.1.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.6",
     "postcss": "^8.3.5",
+    "prettier": "^2.3.2",
     "tailwindcss": "^2.2.4"
   }
 }
