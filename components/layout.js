@@ -1,52 +1,27 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import Nav from "./nav";
 import NavItem from "./navItem";
+import DropdownMenu from "./dowpdownMenu";
 
-import { AcademicCapIcon, BellIcon, CashIcon, ChatIcon, CogIcon, LogoIcon, ChevronDownIcon, ChevronRightIcon, ClipboardCopyBlankIcon, ClipboardCopyCheckedIcon, CloudUploadIcon, CloudIcon, CollectionsIcon, DollarSymbol, QRCodeIcon, ShareIcon, SortAcendingIcon, SortDecendingIcon, VerifiedIcon  } from '../../public/icons';
-
+import CapIcon from "../public/icons/academic_cap.svg";
 
 const Layout = ({ children }) => {
-    return (
-      <>
+  return (
+    <>
       <Nav>
-        <NavItem icon={<BellIcon />} />
-        <NavItem icon={<BellIcon />} />
-        <NavItem icon={<BellIcon />} />
+        <NavItem icon={<CapIcon />} />
+        <NavItem icon={<CapIcon />} />
+        <NavItem icon={<CapIcon />} />
 
-        <NavItem icon={<BellIcon />}>
+        <NavItem icon={<CapIcon />}>
           <DropdownMenu></DropdownMenu>
         </NavItem>
       </Nav>
-      <body>
-
-      </body>`
-      </>
-    );
-  }
-
-  function Navbar(props) {
-    return (
-      <nav className="navbar">
-        <ul className="navbar-nav">{props.children}</ul>
-      </nav>
-    );
-  }
-
-  function NavItem(props) {
-    const [open, setOpen] = useState(false);
-
-    return (
-      <li className="nav-item">
-        <a href="#" className="icon-button" onClick={() => setOpen(!open)}>
-          {props.icon}
-        </a>
-
-        {open && props.children}
-      </li>
-    );
-  }
-  }
+      <body>{children}</body>`
+    </>
+  );
+};
 
 export default Layout;

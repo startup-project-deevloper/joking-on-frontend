@@ -1,78 +1,82 @@
 import { useCallback } from "react";
 import Router from "next/router";
 
-import { useState, useEffect, useRef } from 'react';
-import { CSSTransition } from 'react-transition-group';
-
-import { AcademicCapIcon, BellIcon, CashIcon, ChatIcon, CogIcon, LogoIcon, ChevronDownIcon, ChevronRightIcon, ClipboardCopyBlankIcon, ClipboardCopyCheckedIcon, CloudUploadIcon, CloudIcon, CollectionsIcon, DollarSymbol, QRCodeIcon, ShareIcon, SortAcendingIcon, SortDecendingIcon, VerifiedIcon  } from '../../public/icons';
+import { useState, useEffect, useRef } from "react";
+import { CSSTransition } from "react-transition-group";
 
 import NavItem from "./navItem";
+
+function calcHeight(el) {
+  const height = el.offsetHeight;
+  setMenuHeight(height);
+}
+
+function DropdownItem(props) {
+  return (
+    <a
+      href="#"
+      className="menu-item"
+      onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}
+    >
+      <span className="icon-button">{props.leftIcon}</span>
+      {props.children}
+      <span className="icon-right">{props.rightIcon}</span>
+    </a>
+  );
+}
 
 const Nav = ({ children }) => {
   const logoHandleChange = useCallback(() => {
     Router.push("/");
   }, []);
-}
+};
 
 function DropdownMenu() {
-  const [activeMenu, setActiveMenu] = useState('main');
+  const [activeMenu, setActiveMenu] = useState("main");
   const [menuHeight, setMenuHeight] = useState(null);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    setMenuHeight(dropdownRef.current?.firstChild.offsetHeight)
-  }, [])
-
-  function calcHeight(el) {
-    const height = el.offsetHeight;
-    setMenuHeight(height);
-  }
-
-  function DropdownItem(props) {
-    return (
-      <a href="#" className="menu-item" onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
-        <span className="icon-button">{props.leftIcon}</span>
-        {props.children}
-        <span className="icon-right">{props.rightIcon}</span>
-      </a>
-    );
-  }
+    setMenuHeight(dropdownRef.current?.firstChild.offsetHeight);
+  }, []);
 
   return (
     <div className="dropdown" style={{ height: menuHeight }} ref={dropdownRef}>
-
       <CSSTransition
-        in={activeMenu === 'main'}
+        in={activeMenu === "main"}
         timeout={500}
         classNames="menu-primary"
         unmountOnExit
-        onEnter={calcHeight}>
+        onEnter={calcHeight}
+      >
         <div className="menu">
           <DropdownItem>My Profile</DropdownItem>
           <DropdownItem
             leftIcon={<CogIcon />}
             rightIcon={<ChevronIcon />}
-            goToMenu="settings">
+            goToMenu="settings"
+          >
             Settings
           </DropdownItem>
           <DropdownItem
             leftIcon="🦧"
             rightIcon={<ChevronIcon />}
-            goToMenu="animals">
+            goToMenu="animals"
+          >
             Animals
           </DropdownItem>
-
         </div>
       </CSSTransition>
 
       <CSSTransition
-        in={activeMenu === 'settings'}
+        in={activeMenu === "settings"}
         timeout={500}
         classNames="menu-secondary"
         unmountOnExit
-        onEnter={calcHeight}>
+        onEnter={calcHeight}
+      >
         <div className="menu">
-          <DropdownItem goToMenu="main" leftIcon={<ArrowIcon />}>
+          <DropdownItem goToMenu="main" leftIcon={<CapIcon />}>
             <h2>My Tutorial</h2>
           </DropdownItem>
           <DropdownItem leftIcon={<BoltIcon />}>HTML</DropdownItem>
@@ -83,11 +87,12 @@ function DropdownMenu() {
       </CSSTransition>
 
       <CSSTransition
-        in={activeMenu === 'animals'}
+        in={activeMenu === "animals"}
         timeout={500}
         classNames="menu-secondary"
         unmountOnExit
-        onEnter={calcHeight}>
+        onEnter={calcHeight}
+      >
         <div className="menu">
           <DropdownItem goToMenu="main" leftIcon={<ArrowIcon />}>
             <h2>Animals</h2>
@@ -101,36 +106,3 @@ function DropdownMenu() {
     </div>
   );
 }
-
-export default App;
-
-  const bellHandleChange = useCallback(() => {});
-
-  const profileHandleChange = useCallback(() => {});
-
-  return (
-    <>
-      <nav className="flex justify-between border-b-2 border-black bg-maximum-red">
-        <ul>
-          <il className="flex justify-around">
-            <NavItem handleChange={logoHandleChange}></NavItem>
-          </il>
-          <div className="flex justify-around">
-            <il>
-              <NavItem handleChange={bellHandleChange} />
-              <NavItem />
-            </il>
-            <il>
-              <NavItem handleChange={profileHandleChange} />
-              <NavItem />
-            </il>
-          </div>
-        </ul>
-      </nav>
-
-      {children}
-    </>
-  );
-};
-
-export default Nav;
