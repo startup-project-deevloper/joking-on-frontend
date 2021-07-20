@@ -2,21 +2,27 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import Nav from "./nav";
+import NavItem from "./navItem";
 
-import Icons
+import { AcademicCapIcon, BellIcon, CashIcon, ChatIcon, CogIcon, LogoIcon, ChevronDownIcon, ChevronRightIcon, ClipboardCopyBlankIcon, ClipboardCopyCheckedIcon, CloudUploadIcon, CloudIcon, CollectionsIcon, DollarSymbol, QRCodeIcon, ShareIcon, SortAcendingIcon, SortDecendingIcon, VerifiedIcon  } from '../../public/icons';
+
 
 const Layout = ({ children }) => {
     return (
+      <>
       <Nav>
-        <NavItem icon={<PlusIcon />} />
         <NavItem icon={<BellIcon />} />
-        <NavItem icon={<MessengerIcon />} />
+        <NavItem icon={<BellIcon />} />
+        <NavItem icon={<BellIcon />} />
 
-        <NavItem icon={<CaretIcon />}>
+        <NavItem icon={<BellIcon />}>
           <DropdownMenu></DropdownMenu>
         </NavItem>
       </Nav>
-      <body
+      <body>
+
+      </body>`
+      </>
     );
   }
 

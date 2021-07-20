@@ -1,12 +1,7 @@
-import Bell from "../public/icons/bell.svg";
-import Logo from "../public/icons/logo.svg";
-
-import{ useEffect, useReducer, useRef 
+import { useEffect, useReducer, useRef 
 } from 'react';
 
-import { BellIcon, CogIcon, LogoIcon, ChevronIcon,  } from '../public/icons';
-
-import BELL from './../constrants/BELL';
+import { AcademicCapIcon, BellIcon, CashIcon, ChatIcon, CogIcon, LogoIcon, ChevronDownIcon, ChevronRightIcon, ClipboardCopyBlankIcon, ClipboardCopyCheckedIcon, CloudUploadIcon, CloudIcon, CollectionsIcon, DollarSymbol, QRCodeIcon, ShareIcon, SortAcendingIcon, SortDecendingIcon, VerifiedIcon  } from '../../public/icons';
 
 //use array to map svg in a memoized way
 function reducer(state = {}, action) {
@@ -30,7 +25,7 @@ const NavItem = ({ handleChange, children, type }) => {
         className="fill-current bg-maximum-red"
         handleChange={handleChange}
       >
-        {<img src={state.type} alt=/>}
+        {<img src={state.type} alt={} />}
         {children}
       </a>
     </li>

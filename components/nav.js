@@ -4,6 +4,8 @@ import Router from "next/router";
 import { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
+import { AcademicCapIcon, BellIcon, CashIcon, ChatIcon, CogIcon, LogoIcon, ChevronDownIcon, ChevronRightIcon, ClipboardCopyBlankIcon, ClipboardCopyCheckedIcon, CloudUploadIcon, CloudIcon, CollectionsIcon, DollarSymbol, QRCodeIcon, ShareIcon, SortAcendingIcon, SortDecendingIcon, VerifiedIcon  } from '../../public/icons';
+
 import NavItem from "./navItem";
 
 const Nav = ({ children }) => {
