@@ -1,4 +1,6 @@
-import { useEffect, useState, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
+
+import { getCloudinaryURL } from "../lib/cloudinary";
 
 import {
   ARROWS_EXPAND,
@@ -21,7 +23,18 @@ import {
   VERIFIED,
 } from "../constrants/index";
 
-function iconReducer(state = {}, action = { type: false }) {
+function masterReducer(state, action) {
+  switch (action.path) {
+    case ANIMATION:
+      return iconAnimationReducer(action);
+    case ICON:
+      return iconReducer(action);
+    default:
+      return new Error();
+  }
+}
+
+function iconReducer(state, action = { type: false }) {
   switch (action.type) {
     default:
       return new Error();
@@ -145,14 +158,14 @@ function iconReducer(state = {}, action = { type: false }) {
   }
 }
 
-function animationsReducer(state = {}, action = { type: false, duration: 0 }) {
+function iconAnimationReducer(state, action = { type: false, duration: 0 }) {
   switch (action.type) {
     default:
-      return { ...state };
+      return new Error();
     case ARROWS_EXPAND:
       return {
         state: {
-          payload: ARROWS_EXPAND,
+          payload: getCloudinaryURL(ARROWS_EXPAND),
           duration: action.duration,
           type: action.type,
         },
@@ -277,72 +290,43 @@ function animationsReducer(state = {}, action = { type: false, duration: 0 }) {
   }
 }
 
-export default function NavItem({ handleChange, children, type }) {
-  const [modeState, modeDispatch] = useReducer(modeReducer, {
+export default function useIcon({ type, dimensions, handleChange }) {
+  const instance = useRef(null);
+
+  const [iconState, iconDispatch] = useReducer(iconReducer, {
     state: {
-      type: CHAT,
-      payload: "fillCurrent animate-bounce text-blue-600",
-      duration: 1000,
+      type: type,
+      className: "fillCurrent animate-bounce text-blue-600",
+      height: dimensions.height,
+      width: dimensions.width,
     },
   });
 
-  const [animationState, animationsDispatch] = useReducer(animationsReducer, {
-    state: {
-      type: BELL,
-      payload: "fillCurrent animate-bounce text-yellow-600",
-      duration: 1000,
-    },
-  });
-
-  const ref = useRef(null);
-
-  const [open, setOpen] = useState(false);
-
-  useEffect(async () => {
-    animationsDispatch({
-      type: type,
-      payload: animation.payload,
-      duration: animation.duration,
-    });
-    modeDispatch({
-      type: type,
-      payload: mode.payload,
-      duration: mode.duration,
-    });
-    if (open) {
-      await animationsDispatch({
+  const [iconAnimationState, iconAnimationDispatch] = useReducer(
+    iconAnimationReducer,
+    {
+      state: {
         type: type,
-        payload: animation.payload,
-        duration: animation.duration,
-      });
-      await modeDispatch({
-        type: type,
-        payload: mode.payload,
-        duration: mode.duration,
-      });
+        duration: 1000,
+        height: dimensions.height,
+        width: dimensions.width,
+      },
     }
-
-    return () => {
-      open = false;
-    };
-  }, [animation, open, mode]);
-
-  return (
-    <li ref={ref}>
-      <a
-        href="#"
-        className={`(fillCurrent ${mode} && text-green-600) && (${animation} && ${animation.payload})`}
-        onClick={() => setOpen(!open) && handleChange()}
-      >
-        {
-          <img
-            src={mode.payload}
-            alt={mode.payload}
-            className={mode.payload && animation.payload}
-          />
-        }
-        {open && children}
-      </a>
-    </li>
   );
+
+  const [masterState, masterDispatch] = useReducer(masterReducer, {
+    state: { type: false },
+  });
+
+  return [
+    <img
+      src={iconState.state.type}
+      className={iconState.state.className}
+      width={iconState.state.width}
+      height={iconState.state.height}
+      onChange={() => handleChange()}
+      aria-label={iconState.state.type}
+    />,
+    dispatch,
+  ];
 }

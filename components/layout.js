@@ -1,25 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { CSSTransition } from "react-transition-group";
-
-import Nav from "./nav";
 import NavItem from "./navItem";
-import DropdownMenu from "./dowpdownMenu";
+import DropdownMenu from "./dropdownMenu";
 
-import CapIcon from "../public/icons/academic_cap.svg";
+import { LOGO } from "../public/icons/logo.svg";
 
 const Layout = ({ children }) => {
   return (
     <>
-      <Nav>
-        <NavItem icon={<CapIcon />} />
-        <NavItem icon={<CapIcon />} />
-        <NavItem icon={<CapIcon />} />
+      <nav>
+        <ul>
+          <NavItem handleChange={() => true} type={LOGO} />
+          <NavItem handleChange={() => true} type={LOGO} />
+          <NavItem handleChange={() => true} type={LOGO} />
 
-        <NavItem icon={<CapIcon />}>
-          <DropdownMenu></DropdownMenu>
-        </NavItem>
-      </Nav>
-      <body>{children}</body>`
+          <NavItem handleChange={() => true} type={LOGO}>
+            <DropdownMenu></DropdownMenu>
+          </NavItem>
+        </ul>
+      </nav>
+      <>{children}</>
     </>
   );
 };

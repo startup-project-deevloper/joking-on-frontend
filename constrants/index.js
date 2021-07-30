@@ -1,4 +1,3 @@
-export const ACADEMIC_CAP = "ACADEMIC_CAP".toLocaleLowerCase() + ".svg";
 export const ARROWS_EXPAND = "ARROWS_EXPAND".toLocaleLowerCase() + ".svg";
 export const CHAT = "CHAT".toLocaleLowerCase() + ".svg";
 export const CHEVRON_DOWN = "CHEVRON_DOWN".toLocaleLowerCase() + ".svg";
@@ -18,3 +17,6 @@ export const SORT_DECENDING = "SORT_DECENDING".toLocaleLowerCase() + ".svg";
 export const SORT_ACENDING = "SORT_ACENDING".toLocaleLowerCase() + ".svg";
 export const STAR = "STAR".toLocaleLowerCase() + ".svg";
 export const VERIFIED = "VERIFIED".toLocaleLowerCase() + ".svg";
+
+export const VIDEO = "VIDEO";
+export const IMAGE = "IMAGE";
