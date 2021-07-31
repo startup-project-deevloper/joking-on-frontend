@@ -1,6 +1,4 @@
-import { useState, useLayoutEffect, useRef, useCallback } from "react";
-
-import Image from "next/image";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 import {
   ARROWS_EXPAND,
@@ -58,6 +56,7 @@ const DropdownMenu = () => {
   });
 
   function DropdownItem({ leftIcon, rightIcon, children, newActiveMenu }) {
+    console.log(rightIcon);
     return (
       <a
         href="#"
@@ -70,28 +69,34 @@ const DropdownMenu = () => {
           }
         }}
       >
-        <span className="mr-2">
-          <Image
-            src={leftIcon.key}
-            width={24}
-            height={24}
-            quality={100}
-            priority={true}
-            layout="fill"
-            className="hover:filter-none hover:bg-purssian-blue"
-          />
+        <span className="w-6 h-6 mr-2">
+          {leftIcon ? (
+            <img
+              src={leftIcon.value}
+              quality={100}
+              width={24}
+              height={24}
+              alt={leftIcon.key}
+              className="w-6 h-6 hover:filter-none hover:bg-purssian-blue"
+            />
+          ) : (
+            <div></div>
+          )}
         </span>
         {children}
-        <span className="ml-auto">
-          <Image
-            src={rightIcon.key}
-            width={24}
-            height={24}
-            quality={100}
-            priority={true}
-            layout="fill"
-            className="hover:filter-none hover:bg-purssian-blue"
-          />
+        <span className="w-6 h-6 ml-auto">
+          {rightIcon ? (
+            <img
+              src={rightIcon.value}
+              quality={100}
+              width={24}
+              height={24}
+              alt={rightIcon.key}
+              className="w-6 h-6 hover:filter-none hover:bg-purssian-blue"
+            />
+          ) : (
+            <div></div>
+          )}
         </span>
       </a>
     );
@@ -116,12 +121,12 @@ const DropdownMenu = () => {
           Settings
         </DropdownItem>
         <DropdownItem
-          leftIcon="🦧"
+          leftIcon={STAR}
           rightIcon={CHEVRON_RIGHT}
           setActiveMenu={setActiveMenu}
           calcHeight={calcHeight}
         >
-          Animals
+          Stars
         </DropdownItem>
       </div>
 
@@ -143,10 +148,10 @@ const DropdownMenu = () => {
         <DropdownItem goToMenu="main" leftIcon={CHEVRON_DOWN}>
           <h2>Animals</h2>
         </DropdownItem>
-        <DropdownItem leftIcon="🦘">Kangaroo</DropdownItem>
-        <DropdownItem leftIcon="🐸">Frog</DropdownItem>
-        <DropdownItem leftIcon="🦋">Horse?</DropdownItem>
-        <DropdownItem leftIcon="🦔">Hedgehog</DropdownItem>
+        <DropdownItem leftIcon={STAR}>Kangaroo</DropdownItem>
+        <DropdownItem leftIcon={STAR}>Frog</DropdownItem>
+        <DropdownItem leftIcon={STAR}>Horse?</DropdownItem>
+        <DropdownItem leftIcon={STAR}>Hedgehog</DropdownItem>
       </div>
     </div>
   );

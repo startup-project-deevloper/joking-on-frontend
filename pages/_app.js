@@ -8,6 +8,8 @@ import CloudinaryContext from "../contexts/couldinary";
 
 import { Cloudinary } from "@cloudinary/base";
 
+import React from "react";
+
 import Head from "next/head";
 import dynamic from "next/dynamic";
 
@@ -21,17 +23,15 @@ const VR = dynamic(
 function App({ Component, pageProps }) {
   const apolloClient = useApollo(pageProps);
 
-  const cloudinaryCDN = React.memo(
-    new Cloudinary({
-      cloud: {
-        cloudName: "joking-on",
-      },
-      url: {
-        secureDistribution: "www.jokingon.com",
-        secure: true,
-      },
-    })
-  );
+  const cloudinaryCDN = new Cloudinary({
+    cloud: {
+      cloudName: "joking-on",
+    },
+    url: {
+      secureDistribution: "www.jokingon.com",
+      secure: true,
+    },
+  });
 
   return (
     <>
