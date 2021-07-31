@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
+import { Transition } from "@headlessui/react";
+
 import {
   ARROWS_EXPAND,
   CHAT,
@@ -20,36 +22,47 @@ import {
   VERIFIED,
 } from "../constrants";
 
-import { LEFT, CENTER, RIGHT } from "../constrants";
+import { LEFT, RIGHT, CENTER } from "../constrants";
 
 const DropdownMenu = () => {
   const [activeMenu, setActiveMenu] = useState(LEFT);
   const [lastActiveMenu, setLastActiveMenu] = useState(activeMenu);
 
-  const [menuHeight, setMenuHeight] = useState(null);
-  const dropdownRef = useRef(null);
+  const directionTo = useRef(null);
 
-  useEffect(() => {
-    setMenuHeight(dropdownRef.current?.firstChild.offsetHeight);
-  });
-
-  const calcHeight = useCallback(() => {
-    if (dropdownRef.current ?? false) {
-      setMenuHeight(dropdownRef.current.firstChild.offsetHeight);
-      setLastActiveMenu(activeMenu);
+  const amIVisible = useCallback((who) => {
+    switch (who) {
+      case LEFT:
+        return activeMenu === LEFT;
+      case RIGHT:
+        return activeMenu === RIGHT;
+      case CENTER:
+        return activeMenu === CENTER;
     }
   });
 
-  function DropdownItem({ leftIcon, rightIcon, children, newActiveMenu }) {
+  function DropdownItem({
+    leftIcon,
+    rightIcon,
+    children,
+    newActiveMenu,
+    direction2,
+  }) {
     return (
       <a
         href="#"
         className="flex items-center p-2 transition-colors translate-x-[300] h-14 ring-black ring-2 hover:bg-purssian-blue"
         onClick={() => {
-          if (newActiveMenu ?? false) {
-            setLastActiveMenu(activeMenu);
-            setActiveMenu(newActiveMenu);
-            calcHeight();
+          if (newActiveMenu != null) {
+            if (newActiveMenu != activeMenu) {
+              directionTo.current = direction2 ?? newActiveMenu;
+              console.log({
+                ref: directionTo,
+                paramD2: direction2,
+                parmaNAM: newActiveMenu,
+              });
+              setActiveMenu(newActiveMenu);
+            }
           }
         }}
       >
@@ -87,56 +100,111 @@ const DropdownMenu = () => {
   }
 
   return (
-    <div
-      className="absolute left-auto flex p-4 overflow-hidden transform translate-x-1/2 rounded bg-maximum-red ring-black ring-2 top-16 w-80"
-      ref={dropdownRef}
-    >
-      <div className="min-w-full">
-        <DropdownItem setActiveMenu={setActiveMenu} calcHeight={calcHeight}>
-          My Profile
-        </DropdownItem>
+    <div className="absolute flex p-4 overflow-hidden font-sans rounded right-2 bg-maximum-red ring-black ring-2 top-16 w-80">
+      <Transition
+        show={amIVisible(LEFT)}
+        enter="transition-transform transform translate-x-full duration-1000 ease-in"
+        enterFrom={`${
+          directionTo.current === LEFT
+            ? "transition-transform transform translate-x-full"
+            : "transition-transform transform -translate-x-full"
+        }`}
+        leave={`${
+          directionTo.current === LEFT
+            ? "transition-opacity duration-1000"
+            : "transition-transform transform -translate-x-full duration-1000 ease-in"
+        }`}
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        className="z-40 flex flex-col min-w-full"
+        afterLeave={() => setLastActiveMenu(LEFT)}
+      >
+        <DropdownItem setActiveMenu={setActiveMenu}>My Profile</DropdownItem>
         <DropdownItem
           leftIcon={COG}
           rightIcon={CHEVRON_RIGHT}
           newActiveMenu={CENTER}
-          setActiveMenu={setActiveMenu}
-          calcHeight={calcHeight}
         >
           Settings
         </DropdownItem>
-        <DropdownItem
-          leftIcon={STAR}
-          rightIcon={CHEVRON_RIGHT}
-          setActiveMenu={setActiveMenu}
-          calcHeight={calcHeight}
-        >
+        <DropdownItem leftIcon={STAR} rightIcon={CHEVRON_RIGHT}>
           Stars
         </DropdownItem>
-      </div>
+      </Transition>
 
-      <div className="min-w-full mx-6">
-        <DropdownItem
-          setActiveMenu={setActiveMenu}
-          calcHeight={calcHeight}
-          leftIcon={CHEVRON_DOWN}
-        >
+      <Transition
+        show={amIVisible(CENTER)}
+        enter={`transition-transform transform translate-x-full duration-1000 ease-in`}
+        enterFrom={`${
+          lastActiveMenu === RIGHT
+            ? "transition-opacity duration-1000"
+            : "transition-transform transform translate-x-full duration-1000 ease-in"
+        }`}
+        leave={`${
+          directionTo.current === LEFT
+            ? "transition-opacity duration-1000"
+            : "transition-transform transform -translate-x-full duration-1000 ease-out"
+        }`}
+        leaveFrom="opacity-0"
+        leaveTo="opacity-0"
+        className="z-30 flex flex-col min-w-full"
+        afterLeave={() => setLastActiveMenu(CENTER)}
+      >
+        <DropdownItem leftIcon={CHEVRON_DOWN}>
           <h2>My Tutorial</h2>
         </DropdownItem>
-        <DropdownItem leftIcon={COLLECTIONS}>HTML</DropdownItem>
-        <DropdownItem leftIcon={COLLECTIONS}>CSS</DropdownItem>
+        <DropdownItem
+          leftIcon={COLLECTIONS}
+          newActiveMenu={RIGHT}
+          direction2={RIGHT}
+        >
+          HTML
+        </DropdownItem>
+        <DropdownItem
+          leftIcon={COLLECTIONS}
+          newActiveMenu={LEFT}
+          direction2={LEFT}
+        >
+          CSS
+        </DropdownItem>
         <DropdownItem leftIcon={COLLECTIONS}>JavaScript</DropdownItem>
         <DropdownItem leftIcon={COLLECTIONS}>Awesome!</DropdownItem>
-      </div>
+      </Transition>
 
-      <div className="min-w-full">
+      <Transition
+        show={amIVisible(RIGHT)}
+        enter="transition-transform transform -translate-x-full transition-height duration-1000 ease-in"
+        enterFrom="transition-transform transform translate-x-full"
+        leave={`${
+          directionTo.current === CENTER
+            ? "transition-opacity duration-1000"
+            : "transition-transform transform -translate-x-full duration-1000 ease-out"
+        }`}
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        className="z-20 flex flex-col min-w-full"
+        afterLeave={() => setLastActiveMenu(RIGHT)}
+      >
         <DropdownItem goToMenu="main" leftIcon={CHEVRON_DOWN}>
           <h2>Animals</h2>
         </DropdownItem>
-        <DropdownItem leftIcon={STAR}>Kangaroo</DropdownItem>
-        <DropdownItem leftIcon={STAR}>Frog</DropdownItem>
+        <DropdownItem
+          leftIcon={STAR}
+          setActiveMenu={setActiveMenu}
+          newActiveMenu={CENTER}
+        >
+          Kangaroo
+        </DropdownItem>
+        <DropdownItem
+          leftIcon={STAR}
+          setActiveMenu={setActiveMenu}
+          newActiveMenu={CENTER}
+        >
+          Frog
+        </DropdownItem>
         <DropdownItem leftIcon={STAR}>Horse?</DropdownItem>
         <DropdownItem leftIcon={STAR}>Hedgehog</DropdownItem>
-      </div>
+      </Transition>
     </div>
   );
 };

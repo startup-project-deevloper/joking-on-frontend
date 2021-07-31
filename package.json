@@ -16,6 +16,7 @@
     "@apollo/client": "^3.3.21",
     "@cloudinary/base": "^1.0.0-beta.4",
     "@cloudinary/react": "^1.0.0-beta.8",
+    "@headlessui/react": "^1.4.0",
     "@portis/web3": "^4.0.0",
     "@react-three/drei": "^7.2.2",
     "@react-three/fiber": "^7.0.6",

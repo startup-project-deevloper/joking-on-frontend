@@ -4,13 +4,16 @@ module.exports = {
   mode: "jit",
   purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    transitionDuration: {
-      DEFAULT: "150ms",
-    },
-    transitionTimingFunction: {
-      DEFAULT: "cubic-bezier(0.4, 0, 0.2, 1)",
-    },
     extend: {
+      transitionDuration: {
+        DEFAULT: "300ms",
+      },
+      transitionTimingFunction: {
+        DEFAULT: "cubic-bezier(0.4, 0, 0.2, 1)",
+      },
+      transitionProperty: {
+        height: "height",
+      },
       fontFamily: {
         sans: ["Source Sans Pro", "sans-serif"],
       },

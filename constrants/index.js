@@ -115,9 +115,13 @@ export const SPIN = "SPIN";
 export const PING = "PING";
 export const END = "END";
 
+export const SMALL = "SMALL";
+export const MEDIUM = "MEDIUM";
+export const LARGE = "LARGE";
+
 export const LEFT = "LEFT";
-export const CENTER = "CENTER";
 export const RIGHT = "RIGHT";
+export const CENTER = "CENTER";
 
 export const NETWORKS = {
   MainNet: 1,
