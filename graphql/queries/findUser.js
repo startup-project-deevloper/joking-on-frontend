@@ -13,13 +13,15 @@ const FIND_USER_QUERY = gql`
       laughsLaughedAt
       addresses {
         name
-        address
+        publicKey
         type
       }
-      profilePhoto
+      profilePhoto {
+        url
+      }
       nonfungibleTokens {
         address {
-          address
+          publicKey
         }
         visualization {
           url
@@ -50,11 +52,15 @@ const FIND_USER_QUERY = gql`
       following {
         id
         username
-        profilePhoto
+        profilePhoto {
+          url
+        }
       }
       followers {
         username
-        profilePhoto
+        profilePhoto {
+          url
+        }
       }
     }
   }
