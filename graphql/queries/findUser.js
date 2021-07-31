@@ -1,46 +1,44 @@
 import gql from "graphql-tag";
 
 const FIND_USER_QUERY = gql`
-query findUser ($where: JSON) {
-    users (where: $where) {
+  query findUser($where: JSON) {
+    users(where: $where) {
       username
       firstName
       lastName
       confirmed
       blocked
       bio
-    	isComedian
-    	laughsLaughedAt
-    	addresses {
+      isComedian
+      laughsLaughedAt
+      addresses {
         name
-        content
+        address
         type
       }
-    	profilePhoto {
-        url
-      }
+      profilePhoto
       nonfungibleTokens {
         address {
-          content
+          address
         }
-        image {
-					url
+        visualization {
+          url
         }
         name
       }
       links {
-        content
+        link
         name
       }
-    	videos {
+      videos {
         content {
           url
         }
       }
-    	avatar {
+      avatar {
         content
       }
-    	items {
+      items {
         content
       }
       laughedAtVideos {
@@ -52,17 +50,14 @@ query findUser ($where: JSON) {
       following {
         id
         username
-        profilePhoto {
-          url
-        }
+        profilePhoto
       }
       followers {
         username
-        profilePhoto {
-          url
-        }
+        profilePhoto
+      }
     }
   }
-}`;
+`;
 
 export default FIND_USER_QUERY;

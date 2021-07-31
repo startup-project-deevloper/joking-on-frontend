@@ -1,8 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
+IU90 body {
   margin: 0;
   background: #151616;
   font-family: roboto;
