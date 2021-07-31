@@ -40,27 +40,11 @@ const DropdownMenu = () => {
     }
   });
 
-  const multiphaseAnimationClassNames = useCallback(() => {
-    switch (activeMenu) {
-      case LEFT:
-        return `translate-transform origin-center translate-x-[300] translate-y-[${menuHeight}]`;
-      case CENTER:
-        return `origin-center translate-x-[${
-          lastActiveMenu === LEFT ? -300 : 300
-        }] translate-y-[${menuHeight}]`;
-      case RIGHT:
-        return `translate-transform origin-center translate-x-[-300] translate-y-[${menuHeight}]`;
-      default:
-        return new Error();
-    }
-  });
-
   function DropdownItem({ leftIcon, rightIcon, children, newActiveMenu }) {
-    console.log(rightIcon);
     return (
       <a
         href="#"
-        className="flex items-center p-2 transition-colors h-14 ring-black ring-2"
+        className="flex items-center p-2 transition-colors translate-x-[300] h-14 ring-black ring-2 hover:bg-purssian-blue"
         onClick={() => {
           if (newActiveMenu ?? false) {
             setLastActiveMenu(activeMenu);
@@ -77,7 +61,7 @@ const DropdownMenu = () => {
               width={24}
               height={24}
               alt={leftIcon.key}
-              className="w-6 h-6 hover:filter-none hover:bg-purssian-blue"
+              className="w-6 h-6 hover:filter-none"
             />
           ) : (
             <div></div>
@@ -92,7 +76,7 @@ const DropdownMenu = () => {
               width={24}
               height={24}
               alt={rightIcon.key}
-              className="w-6 h-6 hover:filter-none hover:bg-purssian-blue"
+              className="w-6 h-6 hover:filter-none"
             />
           ) : (
             <div></div>
@@ -104,10 +88,10 @@ const DropdownMenu = () => {
 
   return (
     <div
-      className={`absolute p-4 overflow-hidden transform translate-x-1/2 bg-maximum-red ring-black ring-2 top-16 w-80 ${multiphaseAnimationClassNames()}`}
+      className="absolute left-auto flex p-4 overflow-hidden transform translate-x-1/2 rounded bg-maximum-red ring-black ring-2 top-16 w-80"
       ref={dropdownRef}
     >
-      <div className="w-full">
+      <div className="min-w-full">
         <DropdownItem setActiveMenu={setActiveMenu} calcHeight={calcHeight}>
           My Profile
         </DropdownItem>
@@ -130,7 +114,7 @@ const DropdownMenu = () => {
         </DropdownItem>
       </div>
 
-      <div className="w-full">
+      <div className="min-w-full mx-6">
         <DropdownItem
           setActiveMenu={setActiveMenu}
           calcHeight={calcHeight}
@@ -144,7 +128,7 @@ const DropdownMenu = () => {
         <DropdownItem leftIcon={COLLECTIONS}>Awesome!</DropdownItem>
       </div>
 
-      <div className="w-full">
+      <div className="min-w-full">
         <DropdownItem goToMenu="main" leftIcon={CHEVRON_DOWN}>
           <h2>Animals</h2>
         </DropdownItem>
