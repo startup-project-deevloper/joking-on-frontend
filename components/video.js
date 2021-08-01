@@ -36,6 +36,7 @@ const Video = ({ data }) => {
         }
       });
       videoRef.current.volume = changedTo;
+      setVolume(changedTo);
       setVolumeChanged(true);
     }
   });
