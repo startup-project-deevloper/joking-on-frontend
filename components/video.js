@@ -37,6 +37,11 @@ const Video = ({ data }) => {
       });
       videoRef.current.volume = changedTo;
       setVolume(changedTo);
+      if (changedTo === 0) {
+        setIsMuted(true);
+      } else {
+        setIsMuted(false);
+      }
       setVolumeChanged(true);
     }
   });
