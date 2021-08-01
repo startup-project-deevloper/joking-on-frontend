@@ -72,7 +72,7 @@ const Layout = ({ children }) => {
           </div>
         </ul>
       </nav>
-      <div className="flex min-w-full min-h-full bg-opacity-25 bg-hero-pattern bg-maximum-yellow">
+      <div className="flex min-w-full min-h-full bg-opacity-25 bg-hero-pattern bg-maximum-yellow ">
         {children}
       </div>
       <footer className="h-32 min-w-full bg-maximum-yellow ring-orange ring-2"></footer>

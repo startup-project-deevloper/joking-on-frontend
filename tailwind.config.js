@@ -36,5 +36,7 @@ module.exports = {
   plugins: [
     require("@tailwindcss/aspect-ratio"),
     require("tailwindcss-scroll-snap"),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/line-clamp"),
   ],
 };
