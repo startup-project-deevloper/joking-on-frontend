@@ -24,17 +24,19 @@ import {
 
 import { LEFT, RIGHT, CENTER, CLOSE } from "../constrants";
 
-const DropdownMenu = ({ isOpenDispatch }) => {
+const DropdownMenu = ({ isOpenDispatch, parentRef }) => {
   const [activeMenu, setActiveMenu] = useState(LEFT);
   const [lastActiveMenu, setLastActiveMenu] = useState(activeMenu);
 
   const directionTo = useRef(null);
   const dropdownRef = useRef(null);
 
-  //This causes a race condition when the opening button is clicked
   useEffect(() => {
     const handler = (event) => {
-      if (!dropdownRef.current?.contains(event.target)) {
+      if (
+        !dropdownRef.current?.contains(event.target) &&
+        !parentRef.current?.contains(event.target)
+      ) {
         isOpenDispatch({ type: CLOSE });
       }
     };

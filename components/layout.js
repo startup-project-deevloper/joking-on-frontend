@@ -15,7 +15,7 @@ import {
   CLOSE,
 } from "../constrants";
 
-import { useContext, useReducer } from "react";
+import { useContext, useReducer, useRef } from "react";
 import UserContext from "../contexts/user";
 
 const isOpenReducer = (state, action) => {
@@ -40,7 +40,7 @@ const Layout = ({ children }) => {
     state: { open: false },
   });
 
-  console.log(isOpenState);
+  const userProfilePictureButtonRef = useRef(null);
 
   const router = useRouter();
 
@@ -62,8 +62,12 @@ const Layout = ({ children }) => {
               type={profilePhoto}
               isOpenDispatch={isOpenDispatch}
               isOpenState={isOpenState}
+              ref={userProfilePictureButtonRef}
             >
-              <DropdownMenu isOpenDispatch={isOpenDispatch}></DropdownMenu>
+              <DropdownMenu
+                isOpenDispatch={isOpenDispatch}
+                parentRef={userProfilePictureButtonRef}
+              ></DropdownMenu>
             </NavItem>
           </div>
         </ul>
