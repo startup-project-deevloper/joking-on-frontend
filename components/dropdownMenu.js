@@ -31,11 +31,10 @@ const DropdownMenu = ({ isOpenDispatch }) => {
   const directionTo = useRef(null);
   const dropdownRef = useRef(null);
 
+  //This causes a race condition when the opening button is clicked
   useEffect(() => {
     const handler = (event) => {
       if (!dropdownRef.current?.contains(event.target)) {
-        dropdownRef.current?.removeEventListener("mousedown", handler);
-
         isOpenDispatch({ type: CLOSE });
       }
     };
