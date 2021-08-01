@@ -22,13 +22,32 @@ import {
   VERIFIED,
 } from "../constrants";
 
-import { LEFT, RIGHT, CENTER } from "../constrants";
+import { LEFT, RIGHT, CENTER, CLOSE } from "../constrants";
 
-const DropdownMenu = () => {
+const DropdownMenu = ({ isOpenDispatch }) => {
   const [activeMenu, setActiveMenu] = useState(LEFT);
   const [lastActiveMenu, setLastActiveMenu] = useState(activeMenu);
 
   const directionTo = useRef(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (event) => {
+      if (!dropdownRef.current?.contains(event.target)) {
+        dropdownRef.current?.removeEventListener("mousedown", handler);
+
+        isOpenDispatch({ type: CLOSE });
+      }
+    };
+
+    if (dropdownRef.current !== null) {
+      document.addEventListener("mousedown", handler);
+    }
+
+    return () => {
+      dropdownRef.current?.removeEventListener("mousedown", handler);
+    };
+  }, []);
 
   const amIVisible = useCallback((who) => {
     switch (who) {
@@ -100,7 +119,10 @@ const DropdownMenu = () => {
   }
 
   return (
-    <div className="absolute flex p-4 overflow-hidden font-sans rounded right-2 bg-maximum-red ring-black ring-2 top-16 w-80">
+    <div
+      ref={dropdownRef}
+      className="absolute flex p-4 overflow-hidden font-sans rounded right-2 bg-maximum-red ring-black ring-2 top-16 w-80"
+    >
       <Transition
         show={amIVisible(LEFT)}
         enter="transition-transform transform translate-x-full duration-1000 ease-in"

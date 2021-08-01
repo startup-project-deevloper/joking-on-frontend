@@ -5,17 +5,42 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { LOGO, COG, BELL, CHAT, CLOUD_UPLOAD } from "../constrants";
+import {
+  LOGO,
+  COG,
+  BELL,
+  CHAT,
+  CLOUD_UPLOAD,
+  OPEN,
+  CLOSE,
+} from "../constrants";
 
-import { useContext, useState } from "react";
+import { useContext, useReducer } from "react";
 import UserContext from "../contexts/user";
+
+const isOpenReducer = (state, action) => {
+  switch (action.type) {
+    case OPEN:
+      return { state: { open: true } };
+    case CLOSE:
+      return { state: { open: false } };
+    default:
+      return new Error();
+  }
+};
 
 const Layout = ({ children }) => {
   const user = useContext(UserContext);
-  const [profilePhoto, setProfilePhoto] = useState({
+  const profilePhoto = {
     key: user.username,
     value: user.profilePhoto.url,
+  };
+
+  const [isOpenState, isOpenDispatch] = useReducer(isOpenReducer, {
+    state: { open: false },
   });
+
+  console.log(isOpenState);
 
   const router = useRouter();
 
@@ -29,21 +54,24 @@ const Layout = ({ children }) => {
             </Link>
           </div>
           <div className="flex">
-            {user.isComedian ? (
-              <NavItem handleChange={() => true} type={CLOUD_UPLOAD} />
-            ) : (
-              <></>
-            )}
-            <NavItem handleChange={() => true} type={BELL} />
-            <NavItem handleChange={() => true} type={CHAT} />
+            {user.isComedian ? <NavItem type={CLOUD_UPLOAD} /> : <></>}
+            <NavItem type={BELL} />
+            <NavItem type={CHAT} />
 
-            <NavItem handleChange={() => true} type={profilePhoto}>
-              <DropdownMenu></DropdownMenu>
+            <NavItem
+              type={profilePhoto}
+              isOpenDispatch={isOpenDispatch}
+              isOpenState={isOpenState}
+            >
+              <DropdownMenu isOpenDispatch={isOpenDispatch}></DropdownMenu>
             </NavItem>
           </div>
         </ul>
       </nav>
-      <>{children}</>
+      <div className="flex min-w-full min-h-full bg-opacity-25 bg-hero-pattern bg-maximum-yellow">
+        {children}
+      </div>
+      <footer className="h-32 min-w-full bg-maximum-yellow ring-orange ring-2"></footer>
     </>
   );
 };

@@ -1,4 +1,7 @@
-const { useRef } = require("react");
+import { useRef } from "react";
+
+import { fromPairs } from "lodash";
+import Image from "next/image";
 
 const StakedLaughers = ({ size, max, laughers }) => {
   const count = useRef(0);
@@ -11,11 +14,13 @@ const StakedLaughers = ({ size, max, laughers }) => {
             if (count.current < max) {
               count.current++;
               return (
-                <img
-                  class="inline-block h-6 w-6 rounded-full ring-2 ring-maximum-red"
+                <Image
+                  className="inline-block w-6 h-6 rounded-full ring-2 ring-maximum-red"
                   src={laugher.profilePhoto.url}
                   alt={laugher.username}
-                ></img>
+                  width={24}
+                  height={24}
+                ></Image>
               );
             }
           })}
@@ -28,11 +33,13 @@ const StakedLaughers = ({ size, max, laughers }) => {
             if (count.current < max) {
               count.current++;
               return (
-                <img
-                  class="inline-block h-6 w-6 rounded-full ring-2 ring-maximum-red"
+                <Image
+                  className="inline-block w-8 h-8 rounded-full ring-2 ring-maximum-red"
                   src={laugher.profilePhoto.url}
                   alt={laugher.username}
-                ></img>
+                  width={32}
+                  height={32}
+                ></Image>
               );
             }
           })}
@@ -45,11 +52,13 @@ const StakedLaughers = ({ size, max, laughers }) => {
             if (count.current < max) {
               count.current++;
               return (
-                <img
-                  class="inline-block h-6 w-6 rounded-full ring-2 ring-maximum-red"
+                <Image
+                  className="inline-block w-10 h-10 rounded-full ring-2 ring-maximum-red"
                   src={laugher.profilePhoto.url}
                   alt={laugher.username}
-                ></img>
+                  width={40}
+                  height={40}
+                ></Image>
               );
             }
           })}

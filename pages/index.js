@@ -1,6 +1,9 @@
 import { useContext } from "react";
 
 import Layout from "../components/layout";
+import Feed from "../components/feed";
+import Spacer from "../components/spacer";
+import Sidebar from "../components/sidebar";
 
 import UserContext from "../contexts/user";
 
@@ -10,7 +13,13 @@ import { initializeApollo, addApolloState } from "../lib/apollo";
 function Home({}) {
   const user = useContext(UserContext);
 
-  return <Layout></Layout>;
+  return (
+    <Layout>
+      <Sidebar />
+      <Feed />
+      <Spacer />
+    </Layout>
+  );
 }
 
 export default Home;

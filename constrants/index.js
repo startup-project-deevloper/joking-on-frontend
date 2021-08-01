@@ -123,6 +123,9 @@ export const LEFT = "LEFT";
 export const RIGHT = "RIGHT";
 export const CENTER = "CENTER";
 
+export const OPEN = "OPEN";
+export const CLOSE = "CLOSE";
+
 export const NETWORKS = {
   MainNet: 1,
   Ropsten: 3,
