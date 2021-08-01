@@ -2,22 +2,22 @@ import { useContext } from "react";
 
 import Layout from "../components/layout";
 import Feed from "../components/feed";
-import Spacer from "../components/spacer";
 import Sidebar from "../components/sidebar";
 
 import UserContext from "../contexts/user";
 
+import FIND_VIDEO_QUERY from "../graphql/queries/findUser";
 import FIND_USER_QUERY from "../graphql/queries/findUser";
+
 import { initializeApollo, addApolloState } from "../lib/apollo";
 
-function Home({}) {
+function Home({ videos }) {
   const user = useContext(UserContext);
 
   return (
     <Layout>
       <Sidebar />
-      <Feed />
-      <Spacer />
+      <Feed videos={videos} />
     </Layout>
   );
 }
@@ -33,7 +33,7 @@ const tempUserAuth = {
 export const getServerSideProps = async (context) => {
   const apolloClient = initializeApollo();
 
-  let { data } = await apolloClient.query({
+  const { data } = await apolloClient.query({
     query: FIND_USER_QUERY,
     variables: tempUserAuth,
   });
@@ -43,6 +43,7 @@ export const getServerSideProps = async (context) => {
   return addApolloState(apolloClient, {
     props: {
       user: user,
+      videos: "videos",
       phase: { title: "feed", content: null, publicID: "" },
     },
   });

@@ -126,6 +126,17 @@ export const CENTER = "CENTER";
 export const OPEN = "OPEN";
 export const CLOSE = "CLOSE";
 
+export const PLAY = {
+  key: "PLAY",
+  value:
+    "https://res.cloudinary.com/joking-on/image/upload/v1627830001/play_ca1a421aef.svg",
+};
+export const PAUSE = {
+  key: "PAUSE",
+  value:
+    "https://res.cloudinary.com/joking-on/image/upload/v1627830001/pause_713bbf847b.svg",
+};
+
 export const NETWORKS = {
   MainNet: 1,
   Ropsten: 3,
