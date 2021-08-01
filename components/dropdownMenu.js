@@ -136,16 +136,16 @@ const DropdownMenu = () => {
         show={amIVisible(CENTER)}
         enter={`transition-transform transform translate-x-full duration-1000 ease-in`}
         enterFrom={`${
-          lastActiveMenu === RIGHT
+          directionTo.current === RIGHT
             ? "transition-opacity duration-1000"
             : "transition-transform transform translate-x-full duration-1000 ease-in"
         }`}
         leave={`${
           directionTo.current === LEFT
             ? "transition-opacity duration-1000"
-            : "transition-transform transform -translate-x-full duration-1000 ease-out"
+            : "transition-transform transform -translate-x-full duration-1000 ease-in"
         }`}
-        leaveFrom="opacity-0"
+        leaveFrom="opacity-100"
         leaveTo="opacity-0"
         className="z-30 flex flex-col min-w-full"
         afterLeave={() => setLastActiveMenu(CENTER)}
@@ -178,7 +178,7 @@ const DropdownMenu = () => {
         leave={`${
           directionTo.current === CENTER
             ? "transition-opacity duration-1000"
-            : "transition-transform transform -translate-x-full duration-1000 ease-out"
+            : "transition-transform transform -translate-x-full duration-1000 ease-in"
         }`}
         leaveFrom="opacity-100"
         leaveTo="opacity-0"

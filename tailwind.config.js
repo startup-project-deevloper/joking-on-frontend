@@ -23,7 +23,7 @@ module.exports = {
         /* ESLint: ignore next line */
         orange: "#F77F00",
         "maximum-yellow": "#FCBF49",
-        "lemon-meringue": "EAE2B7",
+        "lemon-meringue": "#EAE2B7",
       },
     },
   },
