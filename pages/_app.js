@@ -41,7 +41,7 @@ function App({ Component, pageProps }) {
       <ApolloProvider client={apolloClient}>
         <CloudinaryContext.Provider value={cloudinaryCDN}>
           <UserContext.Provider value={pageProps.user}>
-            <div id="escape-hatch">
+            <div id="escape-hatch" className="min-w-full">
               <Component {...pageProps} />
             </div>
           </UserContext.Provider>

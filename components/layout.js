@@ -46,7 +46,7 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <nav className="flex w-screen h-16 px-4 border-b-2 bg-maximum-red border-purssian-blue">
+      <nav className="flex h-16 min-w-full px-4 border-b-2 bg-maximum-red border-purssian-blue">
         <ul className="flex justify-between h-full min-w-full">
           <div className="flex items-center cursor-pointer justify-items-start">
             <Link href="/">

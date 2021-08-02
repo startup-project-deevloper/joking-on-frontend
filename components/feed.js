@@ -30,14 +30,66 @@ const tempVideo = [
     slug: "unenunciate",
     uid: "1",
   },
+  {
+    laughers: [],
+    publishedAt: "2021-08-01T16:00:00.000Z",
+    owner: {
+      addresses: [
+        {
+          isActive: true,
+          publicKey: "0xc0b71AeAe2eae9EcB0ebDd5E1e14901127525709",
+        },
+      ],
+      username: "unenunciate",
+      profilePhoto: {
+        url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
+      },
+    },
+    description: "This is a sample video.",
+    laughPoints: [],
+    laughs: null,
+    content: {
+      url: "https://res.cloudinary.com/joking-on/video/upload/v1627820003/Stoner_Jokes_7e0c401d33.mp4",
+    },
+    views: null,
+    comments: [],
+    slug: "unenunciate",
+    uid: "1",
+  },
+  {
+    laughers: [],
+    publishedAt: "2021-08-01T16:00:00.000Z",
+    owner: {
+      addresses: [
+        {
+          isActive: true,
+          publicKey: "0xc0b71AeAe2eae9EcB0ebDd5E1e14901127525709",
+        },
+      ],
+      username: "unenunciate",
+      profilePhoto: {
+        url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
+      },
+    },
+    description: "This is a sample video.",
+    laughPoints: [],
+    laughs: null,
+    content: {
+      url: "https://res.cloudinary.com/joking-on/video/upload/v1627820003/Stoner_Jokes_7e0c401d33.mp4",
+    },
+    views: null,
+    comments: [],
+    slug: "unenunciate",
+    uid: "1",
+  },
 ];
 
 const Feed = ({ videos }) => {
   return (
-    <div className="flex flex-col content-center w-full h-screen px-4 border-b-2 border-black sm:w-4/6">
+    <div className="flex flex-col content-center min-w-full min-h-full px-4 border-b-2 border-black sm:w-4/6">
       {tempVideo.map((video) => {
         return (
-          <div key={video.uid} className="flex ">
+          <div key={video.uid} className="flex">
             <div className="min-w-[72px] mr-4">
               <div className="min-w-[72px] flex justify-center p-2 mt-4 mr-4 rounded-full ">
                 <Image
@@ -69,7 +121,7 @@ const Feed = ({ videos }) => {
               <Video data={video} />
             </div>
 
-            <div className="flex flex-col justify-end h-full ml-2">
+            <div className="flex flex-col justify-end min-h-full ml-2">
               <button className="p-2 mb-4 rounded-full bg-lemon-meringue hover:brightness-125 ring-2 ring-black">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
