@@ -86,11 +86,11 @@ const tempVideo = [
 
 const Feed = ({ videos }) => {
   return (
-    <div className="flex flex-col content-center min-w-full min-h-full px-4 border-b-2 border-black sm:w-4/6">
+    <div className="flex flex-col content-center min-w-full min-h-full px-4 sm:w-4/6">
       {tempVideo.map((video) => {
         return (
-          <div key={video.uid} className="flex">
-            <div className="min-w-[72px] mr-4">
+          <div key={video.uid} className="flex border-b-2 border-black ">
+            <div className=" min-w-[72px] mr-4">
               <div className="min-w-[72px] flex justify-center p-2 mt-4 mr-4 rounded-full ">
                 <Image
                   src={video.owner.profilePhoto.url}
@@ -146,7 +146,7 @@ const Feed = ({ videos }) => {
               </button>
             </div>
 
-            <button className="w-16 h-8 px-4 rounded ring-bl ring bg-lemon-meringue text-black hover:bg-black hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-1px]">
+            <button className="h-8 px-4 rounded ring-black ring bg-lemon-meringue text-black hover:bg-black hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-88px] sm:translate-y-[12px] sm:translate-x-[-88px]">
               Follow
             </button>
           </div>
