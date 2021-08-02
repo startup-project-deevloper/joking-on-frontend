@@ -126,7 +126,7 @@ const DropdownMenu = ({ isOpenDispatch, parentRef }) => {
     >
       <Transition
         show={amIVisible(LEFT)}
-        enter="transition-transform transform translate-x-full duration-1000 ease-in"
+        enter="transition-transform transform"
       >
         <DropdownItem setActiveMenu={setActiveMenu}>My Profile</DropdownItem>
         <DropdownItem
