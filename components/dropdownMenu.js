@@ -122,25 +122,11 @@ const DropdownMenu = ({ isOpenDispatch, parentRef }) => {
   return (
     <div
       ref={dropdownRef}
-      className="absolute z-[3] flex p-4 overflow-hidden font-sans rounded right-2 bg-maximum-red ring-black ring-2 top-16 w-80"
+      className="absolute z-[3] flex p-4 overflow-hidden font-sans rounded right-2 bg-maximum-red ring-black ring-2 top-16 w-100"
     >
       <Transition
         show={amIVisible(LEFT)}
         enter="transition-transform transform translate-x-full duration-1000 ease-in"
-        enterFrom={`${
-          directionTo.current === LEFT
-            ? "transition-transform transform translate-x-full"
-            : "transition-transform transform -translate-x-full"
-        }`}
-        leave={`${
-          directionTo.current === LEFT
-            ? "transition-opacity duration-1000"
-            : "transition-transform transform -translate-x-full duration-1000 ease-in"
-        }`}
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        className="z-40 flex flex-col min-w-full"
-        afterLeave={() => setLastActiveMenu(LEFT)}
       >
         <DropdownItem setActiveMenu={setActiveMenu}>My Profile</DropdownItem>
         <DropdownItem
