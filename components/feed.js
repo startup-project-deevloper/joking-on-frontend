@@ -34,7 +34,7 @@ const tempVideo = [
 
 const Feed = ({ videos }) => {
   return (
-    <div className="flex flex-col content-center w-screen h-screen px-4 border-b-2 border-black sm:w-4/6">
+    <div className="flex flex-col content-center w-full h-screen px-4 border-b-2 border-black sm:w-4/6">
       {tempVideo.map((video) => {
         return (
           <div key={video.uid} className="flex ">
@@ -55,9 +55,6 @@ const Feed = ({ videos }) => {
                   <h1 className="text-xl text-gray-900">
                     {video.owner.username}
                   </h1>
-                  <button className="px-4 ml-2 rounded ring-orange ring bg-lemon-meringue text-orange hover:bg-orange hover:text-lemon-meringue active:brightness-125">
-                    Follow
-                  </button>
                 </div>
                 {video.owner.addresses.map((address) => {
                   if (address.isActive) {
@@ -96,6 +93,10 @@ const Feed = ({ videos }) => {
                 </svg>
               </button>
             </div>
+
+            <button className="w-16 h-8 px-4 rounded ring-orange ring bg-lemon-meringue text-orange hover:bg-orange hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-1px]">
+              Follow
+            </button>
           </div>
         );
       })}
