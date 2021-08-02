@@ -38,6 +38,8 @@ const DropdownMenu = ({ isOpenDispatch, parentRef }) => {
         !parentRef.current?.contains(event.target)
       ) {
         isOpenDispatch({ type: CLOSE });
+        setActiveMenu(LEFT);
+        setLastActiveMenu(LEFT);
       }
     };
 
