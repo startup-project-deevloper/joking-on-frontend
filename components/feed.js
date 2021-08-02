@@ -86,7 +86,7 @@ const tempVideo = [
 
 const Feed = ({ videos }) => {
   return (
-    <div className="flex flex-col content-center min-w-full min-h-full px-4 sm:w-4/6">
+    <div className="flex flex-col content-center w-full min-h-full px-4 pr-32 sm:w-4/6">
       {tempVideo.map((video) => {
         return (
           <div key={video.uid} className="flex border-b-2 border-black ">
@@ -146,7 +146,7 @@ const Feed = ({ videos }) => {
               </button>
             </div>
 
-            <button className="h-8 px-4 rounded ring-black ring bg-lemon-meringue text-black hover:bg-black hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-88px] sm:translate-y-[12px] sm:translate-x-[-88px]">
+            <button className="h-8 px-4 rounded ring-black ring bg-lemon-meringue text-black hover:bg-black hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-88px] sm:translate-y-[24px] sm:translate-x-44">
               Follow
             </button>
           </div>
@@ -157,12 +157,3 @@ const Feed = ({ videos }) => {
 };
 
 export default Feed;
-
-/**
-{
-        username
-        profilePhoto {
-          url
-        }
-      }
-      **/

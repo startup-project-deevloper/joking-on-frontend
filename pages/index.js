@@ -11,12 +11,14 @@ import FIND_USER_QUERY from "../graphql/queries/findUser";
 
 import { initializeApollo, addApolloState } from "../lib/apollo";
 
-function Home({ videos }) {
+function Home({ videos, suggestions }) {
   const user = useContext(UserContext);
+
+  console.log(suggestions);
 
   return (
     <Layout>
-      <Sidebar />
+      <Sidebar suggestions={suggestions} />
       <Feed videos={videos} />
     </Layout>
   );
@@ -44,6 +46,7 @@ export const getServerSideProps = async (context) => {
     props: {
       user: user,
       videos: "videos",
+      suggestions: [user, user, user],
       phase: { title: "feed", content: null, publicID: "" },
     },
   });
