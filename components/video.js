@@ -65,7 +65,7 @@ const Video = ({ data }) => {
         onClick={onVideoPress}
         ref={videoRef}
         src={data.content.url}
-        className="flex z-[1] object-fill bg-white rounded-2xl snap-start aspect-w-9 aspect-w-16 w-52 h-[30rem]"
+        className="flex z-[1] object-fill cursor-pointer bg-white rounded-2xl snap-start aspect-w-9 aspect-w-16 w-52 h-[30rem]"
       ></video>
 
       <button

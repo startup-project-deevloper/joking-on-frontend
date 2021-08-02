@@ -46,7 +46,7 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <nav className="flex w-screen h-16 px-4 bg-maximum-red ring-black ring-2">
+      <nav className="flex w-screen h-16 px-4 border-b-2 bg-maximum-red border-purssian-blue">
         <ul className="flex justify-between h-full min-w-full">
           <div className="flex items-center cursor-pointer justify-items-start">
             <Link href="/">
@@ -72,7 +72,7 @@ const Layout = ({ children }) => {
           </div>
         </ul>
       </nav>
-      <div className="flex min-w-full min-h-full bg-gray-900 bg-opacity-25 ">
+      <div className="flex min-w-full min-h-full bg-maximum-red ">
         {children}
       </div>
     </>

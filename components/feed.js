@@ -52,14 +52,14 @@ const Feed = ({ videos }) => {
             <div className="pb-8">
               <div className="flex flex-col py-4">
                 <div className="flex">
-                  <h1 className="text-xl text-gray-900">
+                  <h1 className="text-xl text-lemon-meringue">
                     {video.owner.username}
                   </h1>
                 </div>
                 {video.owner.addresses.map((address) => {
                   if (address.isActive) {
                     return (
-                      <h3 className="mt-2 text-xs text-gray-500 truncate w-52">
+                      <h3 className="mt-2 text-xs truncate text-lemon-meringue w-52">
                         {address.publicKey}
                       </h3>
                     );
@@ -94,7 +94,7 @@ const Feed = ({ videos }) => {
               </button>
             </div>
 
-            <button className="w-16 h-8 px-4 rounded ring-orange ring bg-lemon-meringue text-orange hover:bg-orange hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-1px]">
+            <button className="w-16 h-8 px-4 rounded ring-bl ring bg-lemon-meringue text-black hover:bg-black hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-1px]">
               Follow
             </button>
           </div>
