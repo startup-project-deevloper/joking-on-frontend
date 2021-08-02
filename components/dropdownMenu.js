@@ -122,7 +122,7 @@ const DropdownMenu = ({ isOpenDispatch, parentRef }) => {
   return (
     <div
       ref={dropdownRef}
-      className="absolute flex p-4 overflow-hidden font-sans rounded right-2 bg-maximum-red ring-black ring-2 top-16 w-80"
+      className="absolute z-[3] flex p-4 overflow-hidden font-sans rounded right-2 bg-maximum-red ring-black ring-2 top-16 w-80"
     >
       <Transition
         show={amIVisible(LEFT)}

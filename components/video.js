@@ -10,7 +10,7 @@ const Video = ({ data }) => {
   const videoRef = useRef(null);
   const volumeRef = useRef(null);
 
-  const onVideoPress = useCallback((event) => {
+  const onVideoPress = useCallback(() => {
     if (isPlaying) {
       videoRef.current.pause();
       setIsPlaying(false);
@@ -65,7 +65,7 @@ const Video = ({ data }) => {
         onClick={onVideoPress}
         ref={videoRef}
         src={data.content.url}
-        className="flex z-[1] object-fill w-full bg-white rounded-2xl snap-start aspect-w-9 aspect-w-16 h- h-[30rem]"
+        className="flex z-[1] object-fill bg-white rounded-2xl snap-start aspect-w-9 aspect-w-16 w-52 h-[30rem]"
       ></video>
 
       <button
@@ -133,9 +133,9 @@ const Video = ({ data }) => {
       </button>
 
       {/*for some reason this doesn't repaint the slider*/}
-      <div className="absolute z-[2] translate-x-20 -translate-y-8 ">
+      <div className="absolute z-[2] translate-x-[4.5rem] -translate-y-8 ">
         {isOpen && (
-          <section>
+          <section className="">
             <input
               ref={volumeRef}
               type="range"

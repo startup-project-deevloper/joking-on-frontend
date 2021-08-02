@@ -34,30 +34,35 @@ const tempVideo = [
 
 const Feed = ({ videos }) => {
   return (
-    <div className="flex flex-col content-center w-3/6 h-screen mx-12">
+    <div className="flex flex-col content-center w-screen h-screen px-4 border-b-2 border-black sm:w-4/6">
       {tempVideo.map((video) => {
         return (
           <div key={video.uid} className="flex ">
-            <div className="min-w-[100px] mr-4">
-              <div className="flex justify-center p-2 mt-4 mr-4 bg-black rounded-full ">
+            <div className="min-w-[72px] mr-4">
+              <div className="min-w-[72px] flex justify-center p-2 mt-4 mr-4 rounded-full ">
                 <Image
                   src={video.owner.profilePhoto.url}
                   alt={video.owner.username}
-                  width={64}
-                  height={64}
-                  className="flex rounded-full"
+                  width={72}
+                  height={72}
+                  className="flex rounded-full min-w-[64px]"
                 />
               </div>
             </div>
             <div className="pb-8">
               <div className="flex flex-col py-4">
-                <h1 className="text-xl text-gray-900">
-                  {video.owner.username}
-                </h1>
+                <div className="flex">
+                  <h1 className="text-xl text-gray-900">
+                    {video.owner.username}
+                  </h1>
+                  <button className="px-4 ml-2 rounded ring-orange ring bg-lemon-meringue text-orange hover:bg-orange hover:text-lemon-meringue active:brightness-125">
+                    Follow
+                  </button>
+                </div>
                 {video.owner.addresses.map((address) => {
                   if (address.isActive) {
                     return (
-                      <h3 className="mt-2 text-xs text-gray-500 overflow-ellipsis">
+                      <h3 className="mt-2 text-xs text-gray-500 truncate w-52">
                         {address.publicKey}
                       </h3>
                     );
@@ -89,12 +94,6 @@ const Feed = ({ videos }) => {
                 >
                   <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
                 </svg>
-              </button>
-            </div>
-
-            <div className="flex justify-center w-full h-6 mt-8">
-              <button className="px-4 rounded ring-orange ring bg-lemon-meringue text-orange hover:bg-orange hover:text-lemon-meringue active:brightness-125">
-                Follow
               </button>
             </div>
           </div>
