@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import { useUserAgent } from "next-useragent";
 
 import UserContext from "../contexts/user";
@@ -31,6 +31,9 @@ function Home({ user, videos, suggestions, styles, useragent }) {
     }
   }, [useragent]);
 
+  const [sessionState, sessionDispatch] = useReducer(() => ({}), { state: {} });
+  useEffect(() => {}, [useragent]);
+
   console.log(videos);
 
   return (
@@ -38,7 +41,7 @@ function Home({ user, videos, suggestions, styles, useragent }) {
       {ua.isMobile ? (
         <UserContext.Provider value={user}>
           <MobileLayout>
-            <MobileFeed videos={videos} />
+            <MobileFeed videos={videos} sessionDispatch={sessionDispatch} />
             <MobileSidebar suggestions={suggestions} styles={styles} />
           </MobileLayout>
         </UserContext.Provider>
