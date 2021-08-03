@@ -31,6 +31,8 @@ function Home({ user, videos, suggestions, styles, useragent }) {
     }
   }, [useragent]);
 
+  console.log(videos);
+
   return (
     <>
       {ua.isMobile ? (
@@ -72,10 +74,16 @@ const tempVideos = [
         },
       ],
       username: "unenunciate",
+      isComedian: true,
       profilePhoto: {
         url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
       },
     },
+    tags: [
+      { content: "weed" },
+      { content: "420" },
+      { content: "observational" },
+    ],
     description: "This is a sample video.",
     laughPoints: [],
     laughs: null,
@@ -98,10 +106,16 @@ const tempVideos = [
         },
       ],
       username: "unenunciate",
+      isComedian: true,
       profilePhoto: {
         url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
       },
     },
+    tags: [
+      { content: "weed" },
+      { content: "420" },
+      { content: "observational" },
+    ],
     description: "This is a sample video.",
     laughPoints: [],
     laughs: null,
@@ -124,10 +138,16 @@ const tempVideos = [
         },
       ],
       username: "unenunciate",
+      isComedian: true,
       profilePhoto: {
         url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
       },
     },
+    tags: [
+      { content: "weed" },
+      { content: "420" },
+      { content: "observational" },
+    ],
     description: "This is a sample video.",
     laughPoints: [],
     laughs: null,

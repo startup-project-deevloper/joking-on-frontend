@@ -134,6 +134,7 @@ const Layout = ({ children }) => {
         </ul>
       </nav>
       <div className="flex min-w-full min-h-full bg-maximum-red ">
+        <div className="z-30" id="escape-hatch" />
         {children}
       </div>
     </>
