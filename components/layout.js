@@ -15,7 +15,7 @@ import {
   CLOSE,
 } from "../constrants";
 
-import { useContext, useReducer, useRef } from "react";
+import { useContext, useEffect, useReducer, useRef } from "react";
 import UserContext from "../contexts/user";
 
 const isOpenReducer = (state, action) => {
@@ -41,16 +41,77 @@ const Layout = ({ children }) => {
   });
 
   const userProfilePictureButtonRef = useRef(null);
+  const navRef = useRef(null);
 
   const router = useRouter();
 
+  useEffect(() => {
+    var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
+
+    function preventDefault(e) {
+      e.preventDefault();
+    }
+
+    function preventDefaultForScrollKeys(e) {
+      if (keys[e.keyCode]) {
+        preventDefault(e);
+        return false;
+      }
+    }
+
+    // modern Chrome requires { passive: false } when adding event
+    var supportsPassive = false;
+    try {
+      window.addEventListener(
+        "test",
+        null,
+        Object.defineProperty({}, "passive", {
+          get: function () {
+            supportsPassive = true;
+          },
+        })
+      );
+    } catch (e) {}
+
+    var wheelOpt = supportsPassive ? { passive: false } : false;
+    var wheelEvent =
+      "onwheel" in document.createElement("div") ? "wheel" : "mousewheel";
+
+    function disableScroll() {
+      window.addEventListener("DOMMouseScroll", preventDefault, false); // older FF
+      window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+      window.addEventListener("touchmove", preventDefault, wheelOpt); // mobile
+      window.addEventListener("keydown", preventDefaultForScrollKeys, false);
+    }
+
+    function enableScroll() {
+      window.removeEventListener("DOMMouseScroll", preventDefault, false);
+      window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
+      window.removeEventListener("touchmove", preventDefault, wheelOpt);
+      window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
+    }
+
+    navRef.current.addEventListener("mouseenter", disableScroll);
+    navRef.current.addEventListener("mouseleave", enableScroll);
+  });
+
   return (
     <>
-      <nav className="flex h-16 min-w-full px-4 border-b-2 border-black bg-maximum-red">
+      <nav
+        ref={navRef}
+        className="flex h-16 min-w-full px-4 border-b-2 border-black bg-maximum-red"
+      >
         <ul className="flex justify-between h-full min-w-full">
           <div className="flex items-center cursor-pointer justify-items-start">
             <Link href="/">
-              <Image src={LOGO.value} alt={LOGO.key} height={64} width={64} />
+              <Image
+                src={LOGO.value}
+                alt={LOGO.key}
+                height={64}
+                width={64}
+                layout="fixed"
+                className="rounded hover:bg-lemon-meringue"
+              />
             </Link>
           </div>
           <div className="flex">

@@ -7,6 +7,8 @@ const Video = ({ data }) => {
   const [volume, setVolume] = useState(false);
   const [volumeChanged, setVolumeChanged] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(false);
+
   const videoRef = useRef(null);
   const volumeRef = useRef(null);
 

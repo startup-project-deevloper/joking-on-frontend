@@ -23,7 +23,6 @@ module.exports = {
       colors: {
         "maximum-red": "#D62828",
         "purssian-blue": "#003049",
-        /* ESLint: ignore next line */
         orange: "#F77F00",
         "maximum-yellow": "#FCBF49",
         "lemon-meringue": "#EAE2B7",

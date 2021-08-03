@@ -3,102 +3,25 @@ import FIND_VIDEO_QUERY from "../graphql/queries/findVideo";
 
 import Video from "./video";
 import Image from "next/image";
-const tempVideo = [
-  {
-    laughers: [],
-    publishedAt: "2021-08-01T16:00:00.000Z",
-    owner: {
-      addresses: [
-        {
-          isActive: true,
-          publicKey: "0xc0b71AeAe2eae9EcB0ebDd5E1e14901127525709",
-        },
-      ],
-      username: "unenunciate",
-      profilePhoto: {
-        url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
-      },
-    },
-    description: "This is a sample video.",
-    laughPoints: [],
-    laughs: null,
-    content: {
-      url: "https://res.cloudinary.com/joking-on/video/upload/v1627820003/Stoner_Jokes_7e0c401d33.mp4",
-    },
-    views: null,
-    comments: [],
-    slug: "unenunciate",
-    uid: "1",
-  },
-  {
-    laughers: [],
-    publishedAt: "2021-08-01T16:00:00.000Z",
-    owner: {
-      addresses: [
-        {
-          isActive: true,
-          publicKey: "0xc0b71AeAe2eae9EcB0ebDd5E1e14901127525709",
-        },
-      ],
-      username: "unenunciate",
-      profilePhoto: {
-        url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
-      },
-    },
-    description: "This is a sample video.",
-    laughPoints: [],
-    laughs: null,
-    content: {
-      url: "https://res.cloudinary.com/joking-on/video/upload/v1627820003/Stoner_Jokes_7e0c401d33.mp4",
-    },
-    views: null,
-    comments: [],
-    slug: "unenunciate",
-    uid: "1",
-  },
-  {
-    laughers: [],
-    publishedAt: "2021-08-01T16:00:00.000Z",
-    owner: {
-      addresses: [
-        {
-          isActive: true,
-          publicKey: "0xc0b71AeAe2eae9EcB0ebDd5E1e14901127525709",
-        },
-      ],
-      username: "unenunciate",
-      profilePhoto: {
-        url: "https://res.cloudinary.com/joking-on/image/upload/v1627719058/profile_936ca77835.jpg",
-      },
-    },
-    description: "This is a sample video.",
-    laughPoints: [],
-    laughs: null,
-    content: {
-      url: "https://res.cloudinary.com/joking-on/video/upload/v1627820003/Stoner_Jokes_7e0c401d33.mp4",
-    },
-    views: null,
-    comments: [],
-    slug: "unenunciate",
-    uid: "1",
-  },
-];
+import Link from "next/link";
 
 const Feed = ({ videos }) => {
   return (
-    <div className="flex flex-col content-center w-full min-h-full px-4 pr-32 sm:w-4/6">
-      {tempVideo.map((video) => {
+    <div className="flex flex-col content-center w-full h-screen px-4 pr-32 overflow-y-scroll style-scrollbar overscroll-contain sm:w-4/6 remove-scrollbar">
+      {videos.map((video) => {
         return (
           <div key={video.uid} className="flex border-b-2 border-black ">
             <div className=" min-w-[72px] mr-4">
               <div className="min-w-[72px] flex justify-center p-2 mt-4 mr-4 rounded-full ">
-                <Image
-                  src={video.owner.profilePhoto.url}
-                  alt={video.owner.username}
-                  width={72}
-                  height={72}
-                  className="flex rounded-full min-w-[64px]"
-                />
+                <Link href={`/${video.owner.username}`}>
+                  <Image
+                    src={video.owner.profilePhoto.url}
+                    alt={video.owner.username}
+                    width={72}
+                    height={72}
+                    className="flex rounded-full min-w-[64px] hover:brightness-125 cursor-pointer"
+                  />
+                </Link>
               </div>
             </div>
             <div className="pb-8">
@@ -146,7 +69,7 @@ const Feed = ({ videos }) => {
               </button>
             </div>
 
-            <button className="h-8 px-4 rounded ring-black ring bg-lemon-meringue text-black hover:bg-black hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-88px] sm:translate-y-[24px] sm:translate-x-44">
+            <button className="h-8 px-4 rounded ring-black ring bg-lemon-meringue text-black hover:bg-black hover:text-lemon-meringue active:brightness-125 translate-y-[12px] translate-x-[-88px] lg:translate-y-[24px] lg:translate-x-44">
               Follow
             </button>
           </div>

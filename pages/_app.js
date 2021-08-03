@@ -3,12 +3,11 @@ import "../styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../lib/apollo";
 
-import UserContext from "../contexts/user";
 import CloudinaryContext from "../contexts/couldinary";
 
 import { Cloudinary } from "@cloudinary/base";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -35,16 +34,9 @@ function App({ Component, pageProps }) {
 
   return (
     <>
-      <Head>
-        <title>JOKING ON: {pageProps.phase.title.toUpperCase()}</title>
-      </Head>
       <ApolloProvider client={apolloClient}>
         <CloudinaryContext.Provider value={cloudinaryCDN}>
-          <UserContext.Provider value={pageProps.user}>
-            <div id="escape-hatch" className="min-w-full">
-              <Component {...pageProps} />
-            </div>
-          </UserContext.Provider>
+          <Component {...pageProps} />
         </CloudinaryContext.Provider>
       </ApolloProvider>
     </>
