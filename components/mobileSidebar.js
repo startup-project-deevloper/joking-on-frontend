@@ -38,9 +38,9 @@ const MobileSidebar = ({ isOpen, setIsOpen }) => {
       <Transition
         show={isOpen ? true : false}
         timeout={500}
-        enterFrom="-translate-x-64 tramsform-"
+        enterFrom="-translate-x-64"
         enter="-translate-x-64 duration-500 transition-translate"
-        enterTo="translate-x-0 duration-500 transition-translate"
+        enterTo="translate-x-0"
         leave="-translate-x-64 duration-500 transition-translate"
         className="fixed top-0 left-0 z-[52] justify-center w-64 min-h-screen bg-lemon-meringue -translate-x-64"
         as="nav"
