@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { useUserAgent } from "next-useragent";
 
-import UserContext from "../contexts/user";
+import { AuthProvider } from "../contexts/auth";
 
 import FIND_VIDEO_QUERY from "../graphql/queries/findUser";
 import FIND_USER_QUERY from "../graphql/queries/findUser";
@@ -31,27 +31,20 @@ function Home({ user, videos, suggestions, styles, useragent }) {
     }
   }, [useragent]);
 
-  const [sessionState, sessionDispatch] = useReducer(() => ({}), { state: {} });
   useEffect(() => {}, [useragent]);
-
-  console.log(videos);
 
   return (
     <>
       {ua.isMobile ? (
-        <UserContext.Provider value={user}>
-          <MobileLayout>
-            <MobileFeed videos={videos} sessionDispatch={sessionDispatch} />
-            <MobileSidebar suggestions={suggestions} styles={styles} />
-          </MobileLayout>
-        </UserContext.Provider>
+        <MobileLayout>
+          <MobileFeed videos={videos} />
+          <MobileSidebar styles={styles} />
+        </MobileLayout>
       ) : (
-        <UserContext.Provider value={user}>
-          <DesktopLayout>
-            <Sidebar suggestions={suggestions} styles={styles} />
-            <Feed videos={videos} />
-          </DesktopLayout>
-        </UserContext.Provider>
+        <DesktopLayout>
+          <Sidebar suggestions={suggestions} styles={styles} />
+          <Feed videos={videos} />
+        </DesktopLayout>
       )}
     </>
   );
@@ -61,7 +54,7 @@ export default Home;
 
 const tempUserAuth = {
   where: {
-    username: "unenunciate",
+    email: "patrick@unenunciate.com",
   },
 };
 

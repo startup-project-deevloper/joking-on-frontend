@@ -1,3 +1,4 @@
+import { data } from "autoprefixer";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,9 +8,13 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useContext,
 } from "react";
 
+import { AuthContext } from "../contexts/auth";
+
 const Sidebar = ({ suggestions, styles }) => {
+  const { user } = useContext(AuthContext);
   const seeMoreSuggestionsButtonRef = useRef(null);
   const [seeMoreSuggestions, setSeeMoreSuggestions] = useState(false);
   const [renderedSuggestions, setRenderedSuggestions] = useState(
@@ -22,8 +27,24 @@ const Sidebar = ({ suggestions, styles }) => {
 
   const sidebarRef = useRef(null);
   const scrollbarPlaceholderRef = useRef(null);
+  const [sidebarIsExtended, setSidebarIsExtended] = useState(false);
 
   const [firstUpdate, setFirstUpdate] = useState(true);
+
+  useLayoutEffect(() => {
+    if (firstUpdate) {
+      setFirstUpdate(false);
+      setSidebarIsExtended(window.innerWidth <= 768);
+    }
+  }, []);
+
+  useEffect(() => {
+    function handleResize() {
+      setSidebarIsExtended(window.innerWidth <= 768);
+    }
+
+    window.addEventListener("resize", handleResize);
+  }, []);
 
   useLayoutEffect(() => {
     let timer;
@@ -46,17 +67,78 @@ const Sidebar = ({ suggestions, styles }) => {
   });
 
   useEffect(() => {
-    if (firstUpdate) {
-      setFirstUpdate(false);
+    var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
+
+    function preventDefault(e) {
+      e.preventDefault();
     }
-  }, [firstUpdate]);
+
+    function preventDefaultForScrollKeys(e) {
+      if (keys[e.keyCode]) {
+        preventDefault(e);
+        return false;
+      }
+    }
+
+    // modern Chrome requires { passive: false } when adding event
+    var supportsPassive = false;
+    try {
+      window.addEventListener(
+        "test",
+        null,
+        Object.defineProperty({}, "passive", {
+          get: function () {
+            supportsPassive = true;
+          },
+        })
+      );
+    } catch (e) {}
+
+    var wheelOpt = supportsPassive ? { passive: false } : false;
+    var wheelEvent =
+      "onwheel" in document.createElement("div") ? "wheel" : "mousewheel";
+
+    function disableScroll() {
+      window.addEventListener("DOMMouseScroll", preventDefault, false); // older FF
+      window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+      window.addEventListener("touchmove", preventDefault, wheelOpt); // mobile
+      window.addEventListener("keydown", preventDefaultForScrollKeys, false);
+    }
+
+    function enableScroll() {
+      window.removeEventListener("DOMMouseScroll", preventDefault, false);
+      window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
+      window.removeEventListener("touchmove", preventDefault, wheelOpt);
+      window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
+    }
+
+    function handleResize() {
+      if (window.innerWidth <= 768) {
+        sidebarRef.current.addEventListener("mouseenter", disableScroll);
+        sidebarRef.current.addEventListener("mouseleave", enableScroll);
+      } else {
+        sidebarRef.current.removeEventListener("mouseenter", disableScroll);
+        sidebarRef.current.removeEventListener("mouseleave", enableScroll);
+      }
+    }
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      sidebarRef.current?.removeEventListener("mouseenter", disableScroll);
+      sidebarRef.current?.removeEventListener("mouseleave", enableScroll);
+    };
+  });
 
   return (
     <div
       ref={sidebarRef}
       className="flex h-screen min-w-[56px] sm:w-1/4 xl:w-1/3 border-r-2 border-black overflow-y-scroll overscroll-contain style-scrollbar justify-items-center remove-scrollbar"
     >
-      <div className="flex flex-col items-center w-full min-h-full mt-8 border-black mr-[-12px]">
+      <div className="flex flex-col items-center w-full min-h-full mt-8 ">
         {/*finerprint*/}
         <div className="flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center">
@@ -184,7 +266,7 @@ const Sidebar = ({ suggestions, styles }) => {
 
           <button
             ref={seeMoreStylesButtonRef}
-            className="hidden text-xs md:flex md:border-b-2 md:border-black md:px-12 md:"
+            className="hidden text-xs md:flex md:border-b-2 md:border-black md:px-12"
             onClick={() => {
               setRenderedStyles(!seeMoreStyles ? styles : styles.slice(0, 6));
               setSeeMoreStyles(!seeMoreStyles);
@@ -195,6 +277,35 @@ const Sidebar = ({ suggestions, styles }) => {
           >
             See More
           </button>
+
+          <div className="flex-wrap items-center justify-center hidden mb-24 text-sm md:flex">
+            <Link href="/about">
+              <a className="px-4 py-2 my-2 rounded hover:bg-lemon-meringue ">
+                About
+              </a>
+            </Link>
+
+            <Link href="/store">
+              <a className="px-4 py-2 my-2 rounded hover:bg-lemon-meringue ">
+                Store
+              </a>
+            </Link>
+
+            <Link href="/help">
+              <a className="px-4 py-2 my-2 rounded hover:bg-lemon-meringue ">
+                Help
+              </a>
+            </Link>
+            {user.isComedian ? (
+              <Link href="/dashboard">
+                <a className="px-4 py-2 my-2 rounded hover:bg-lemon-meringue">
+                  Comedian Dashboard
+                </a>
+              </Link>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
       </div>
       <div ref={scrollbarPlaceholderRef} className="w-[12px] h-full"></div>

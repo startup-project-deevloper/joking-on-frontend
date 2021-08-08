@@ -16,7 +16,7 @@ import {
 } from "../constrants";
 
 import { useContext, useEffect, useReducer, useRef } from "react";
-import UserContext from "../contexts/user";
+import { AuthContext } from "../contexts/auth";
 
 const isOpenReducer = (state, action) => {
   switch (action.type) {
@@ -30,7 +30,7 @@ const isOpenReducer = (state, action) => {
 };
 
 const Layout = ({ children }) => {
-  const user = useContext(UserContext);
+  const { user } = useContext(AuthContext);
   const profilePhoto = {
     key: user.username,
     value: user.profilePhoto.url,

@@ -61,7 +61,7 @@ const Video = ({ data }) => {
   }, [volumeChanged]);
 
   return (
-    <div className="remove-scrollbar">
+    <div className="relative remove-scrollbar">
       <video
         loop
         onClick={onVideoPress}

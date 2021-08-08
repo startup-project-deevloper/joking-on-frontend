@@ -1,28 +1,45 @@
-import withSession from "../../lib/session";
-import client from "../../lib/apollo";
+
+import cookies from "cookies";
 
 import findUser from "../../graphql/queries/findUser";
 
-import { getUserFromServerCookie } from "../../lib/auth";
+import { getSession } from 'next-auth/client'
 
-export default withUser(async (req, res) => {
-  const { username } = await req.body;
-  const { jwt } = getUserFromServerCookie(req);
+import { AuthContext } from "../contexts/auth";
+import { useState, useContext } from "react";
+
+const Login = ({useragent}) => {
+  const [email, setEmail] = useState("");
+  const {logU} = useContext(AuthContext);
+  let ua = {
+    isMobile: false,
+  };
+  if (useragent) {
+    ua = useUserAgent(useragent);
+  }
+  useEffect(() => {
+    if (!useragent) {
+      ua = useUserAgent(window.navigator.userAgent);
+    }
+  }, [useragent]);
+
+  useEffect(() => {}, [useragent]);
 
   try {
-    let user = await client.query({
-      query: findUser,
-      variables: { where: { username: username } },
-    });
-    user = {
-      isLoggedIn: true,
-      ...user,
-    };
-    req.session.set("user", user);
-    await req.session.save();
-    res.json(user);
   } catch (error) {
     const { response: fetchResponse } = error;
     res.status(fetchResponse?.status || 500).json(error.data);
   }
 });
+
+export const getServerSideProps = ({ req, res }) => {
+    // Create a cookies instance
+  let headers = {}
+  const session = await getSession({ req });
+  if (session) {
+    headers = {Authorization: `Bearer ${session.jwt}`};
+  }
+    cookies.set('myCookieName', 'some-value', {
+        httpOnly: true // true by default
+    })
+} 

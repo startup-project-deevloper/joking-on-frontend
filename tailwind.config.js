@@ -30,7 +30,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      outline: ["focus"],
+    },
   },
   plugins: [
     require("@tailwindcss/aspect-ratio"),

@@ -1,53 +1,89 @@
-import { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import MobileSidebar from "./mobileSidebar";
 
-const MobileLayout = ({ children, sessionDispatch }) => {
+import { LOGO } from "../constrants/";
+
+const MobileLayout = ({ children }) => {
   const [followingIsOpen, setFollowingIsOpen] = useState(false);
   const [forYouIsOpen, setForYouIsOpen] = useState(true);
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  const [displayVideoHeader, setDisplayVideoHeader] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (Object.keys(router.query).length === 0 || router.query === "videos") {
+      setDisplayVideoHeader(true);
+    }
+  }, []);
 
   return (
     <div className="relative min-w-full min-h-screen">
-      <nav className="fixed top-0 z-40 flex min-w-full">
-        <button className="absolute top-0 px-4 py-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 fill-current text-lemon-meringue"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-        <div className="flex items-center justify-center min-w-full text-lemon-meringue">
+      {displayVideoHeader ? (
+        <nav className="fixed top-0 z-40 flex min-w-full">
           <button
-            className={`px-4 py-2 mr-2 ${
-              followingIsOpen ? "" : "brightness-50"
-            }`}
-            onClick={() => {
-              setFollowingIsOpen(true);
-              setForYouIsOpen(false);
-            }}
+            className="absolute top-0 px-4 py-2"
+            onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
           >
-            Following
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6 fill-current text-lemon-meringue"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </button>
-          <button
-            className={`px-4 py-2 ml-2 ${forYouIsOpen ? "" : "brightness-50"}`}
-            onClick={() => {
-              setForYouIsOpen(true);
-              setFollowingIsOpen(false);
-            }}
-          >
-            For You
-          </button>
-        </div>
-      </nav>
+          <div className="flex items-center justify-center min-w-full text-lemon-meringue">
+            <button
+              className={`px-4 py-2 mr-2 ${
+                followingIsOpen ? "" : "brightness-50"
+              }`}
+              onClick={() => {
+                setFollowingIsOpen(true);
+                setForYouIsOpen(false);
+              }}
+            >
+              Following
+            </button>
+            <button
+              className={`px-4 py-2 ml-2 ${
+                forYouIsOpen ? "" : "brightness-50"
+              }`}
+              onClick={() => {
+                setForYouIsOpen(true);
+                setFollowingIsOpen(false);
+              }}
+            >
+              For You
+            </button>
+          </div>
+        </nav>
+      ) : (
+        <nav className="fixed top-0 z-40 flex justify-start min-w-full bg-maximum-red">
+          <Link href="/" className="absolute top-0 px-4 py-2">
+            <a>
+              <Image
+                src={LOGO.value}
+                alt={LOGO.key}
+                height={32}
+                width={32}
+                layout="fixed"
+                className="rounded hover:bg-lemon-meringue"
+              />
+            </a>
+          </Link>
+        </nav>
+      )}
+
       {children}
       <footer className="fixed bottom-0 z-30 flex min-w-full h-14 bg-maximum-red">
         <div className="flex items-center justify-around min-w-full">
