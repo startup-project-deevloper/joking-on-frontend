@@ -1,20 +1,27 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import { LOGO } from "../constrants";
-import router from "next/router";
+import { withRouter, useRouter } from "next/router";
+import { useState } from "react";
+import useAuth from "../hooks/useAuth";
 
-export default function Login() {
+import { LOGO } from "../constrants";
+
+const Login = () => {
   const [input, setInput] = useState("");
-  const { user, loginUser, getToken } = useAuth();
+  const { loginUser, isUserLoggedIn } = useAuth();
   const router = useRouter();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     loginUser(input);
   };
+
+  if (typeof window !== "undefined") {
+    if (isUserLoggedIn()) {
+      router.push("/");
+    }
+  }
 
   return (
     <div>
@@ -49,4 +56,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default withRouter(Login);

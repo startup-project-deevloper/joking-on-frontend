@@ -13,15 +13,13 @@ const MobileSidebar = ({ isOpen, setIsOpen }) => {
   const backgroundRef = useRef(null);
 
   useEffect(() => {
-    if (backgroundRef.current !== null) {
-      document.addEventListener("mousedown", (event) => {
-        if (backgroundRef.current !== null) {
-          if (backgroundRef.current?.contains(event.target)) {
-            setIsOpen(false);
-          }
+    document.addEventListener("mousedown", (event) => {
+      if (backgroundRef.current !== null) {
+        if (backgroundRef.current?.contains(event.target)) {
+          setIsOpen(false);
         }
-      });
-    }
+      }
+    });
 
     return () => {
       document.removeEventListener("mousedown", (event) => {

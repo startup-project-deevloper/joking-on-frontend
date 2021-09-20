@@ -1,6 +1,7 @@
 import { data } from "autoprefixer";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import {
   useCallback,
@@ -18,8 +19,10 @@ const Sidebar = ({ suggestions, styles }) => {
   const seeMoreSuggestionsButtonRef = useRef(null);
   const [seeMoreSuggestions, setSeeMoreSuggestions] = useState(false);
   const [renderedSuggestions, setRenderedSuggestions] = useState(
-    suggestions.slice(0, 6)
+    suggestions.slice(0, 4)
   );
+
+  const router = useRouter();
 
   const seeMoreStylesButtonRef = useRef(null);
   const [seeMoreStyles, setSeeMoreStyles] = useState(false);
@@ -141,8 +144,8 @@ const Sidebar = ({ suggestions, styles }) => {
       <div className="flex flex-col items-center w-full min-h-full mt-8 ">
         {/*finerprint*/}
         <div className="flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center justify-center">
-            <button className="flex w-6 h-6 my-2 rounded hover:bg-lemon-meringue md:w-full">
+          <div className="flex flex-col items-center justify-center w-full pb-1">
+            <button className="flex w-6 h-6 rounded hover:bg-lemon-meringue md:w-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-6 h-6"
@@ -202,10 +205,33 @@ const Sidebar = ({ suggestions, styles }) => {
                 <span>Discover</span>
               </div>
             </button>
+
+            <button
+              className="flex w-6 h-6 my-2 rounded hover:bg-lemon-meringue md:w-full"
+              onClick={() => router.push("/collectables")}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                />
+              </svg>
+              <div className="hidden ml-4 md:flex">
+                <span>Collectables</span>
+              </div>
+            </button>
           </div>
         </div>
 
-        <div className="flex flex-col justify-center border-t-2 border-b-2 border-black">
+        <div className="flex flex-col items-center justify-center py-2 border-t-2 border-b-2 border-black">
           {renderedSuggestions.map((suggestion) => {
             return (
               <Link href={`/${suggestion.username}}`} key={suggestion.username}>
@@ -231,10 +257,10 @@ const Sidebar = ({ suggestions, styles }) => {
           })}
           <button
             ref={seeMoreSuggestionsButtonRef}
-            className="hidden text-xs md:flex"
+            className="hidden text-xs md:flex md:px-12"
             onClick={() => {
               setRenderedSuggestions(
-                !seeMoreSuggestions ? suggestions : suggestions.slice(0, 6)
+                !seeMoreSuggestions ? suggestions : suggestions.slice(0, 4)
               );
               setSeeMoreSuggestions(!seeMoreSuggestions);
               seeMoreSuggestionsButtonRef.current.innerHTML = seeMoreSuggestions
@@ -246,8 +272,8 @@ const Sidebar = ({ suggestions, styles }) => {
           </button>
         </div>
 
-        <div className="flex flex-col items-center border-b-2 border-black">
-          <div className="flex flex-wrap items-center justify-around">
+        <div className="flex flex-col items-center pt-2">
+          <div className="flex flex-wrap items-center justify-around w-2/3">
             {renderedStyles.map((style) => {
               return (
                 <Link
@@ -266,7 +292,7 @@ const Sidebar = ({ suggestions, styles }) => {
 
           <button
             ref={seeMoreStylesButtonRef}
-            className="hidden text-xs md:flex md:border-b-2 md:border-black md:px-12"
+            className="hidden pb-2 text-xs md:flex md:border-b-2 md:border-black md:px-12"
             onClick={() => {
               setRenderedStyles(!seeMoreStyles ? styles : styles.slice(0, 6));
               setSeeMoreStyles(!seeMoreStyles);
@@ -277,8 +303,9 @@ const Sidebar = ({ suggestions, styles }) => {
           >
             See More
           </button>
-
-          <div className="flex-wrap items-center justify-center hidden mb-24 text-sm md:flex">
+        </div>
+        <div class="flex flex-col items-center justify-center py-2">
+          <div className="flex-wrap items-center justify-center hidden mb-24 text-sm md:flex md:w-2/3">
             <Link href="/about">
               <a className="px-4 py-2 my-2 rounded hover:bg-lemon-meringue ">
                 About

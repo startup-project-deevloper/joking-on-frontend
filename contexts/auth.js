@@ -48,20 +48,12 @@ const tempQuery = {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(tempQuery);
-  const [magic, setMagic] = useState();
+  const [magic, setMagic] = useState(null);
+  const [arbitrumMagic, setArbitrumMagic] = useState(null);
   const [variables, setVariables] = useState({ email: "" });
   const router = useRouter({ email: "" });
+  const [beforeLogout, setBeforeLogout] = useState([]);
 
-  const [getUserData, { loading, data, error }] = useLazyQuery(
-    FIND_USER_QUERY,
-    {
-      variables,
-      onCompleted: (data) => {
-        setUser(data.users[0]);
-        signIn(data.users[0]);
-      },
-    }
-  );
 
   /**
    * Log the user in
@@ -69,15 +61,15 @@ export const AuthProvider = ({ children }) => {
    */
   const loginUser = useCallback(async (email) => {
     try {
-      await magic.auth.loginWithMagicLink({ email });
-
+      const didToken = await magic.auth.loginWithMagicLink({ email: email });
+      await arbitrumMagic.auth.loginWithMagicCredentials({ token: didToken });
       setVariables({
         where: {
           email: email,
         },
       });
 
-      await getUserData();
+      
 
       router.push({
         path: "/",
@@ -92,29 +84,11 @@ export const AuthProvider = ({ children }) => {
    * Log the user out
    */
   const logoutUser = useCallback(async () => {
+    beforeLogout.map((fn) => fn());
     try {
       await magic.user.logout();
       setUser(null);
       router.push("/");
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  /**
-   * If user is logged in, get data and display it
-   */
-  const checkUserLoggedIn = useCallback(async () => {
-    try {
-      const isLoggedIn = await magic.user.isLoggedIn();
-
-      if (isLoggedIn) {
-        const { email } = await magic.user.getMetadata();
-        setUser({ email });
-        //Add this just for test
-        const token = await getToken();
-        console.log("checkUserLoggedIn token", token);
-      }
     } catch (err) {
       console.log(err);
     }
@@ -138,13 +112,31 @@ export const AuthProvider = ({ children }) => {
    * Reload user login on app refresh
    */
   useEffect(() => {
-    setMagic(new Magic("pk_live_D9B045E9D4A5360C"));
-
-    checkUserLoggedIn();
+    if (magic === null) {
+      setMagic(new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY));
+      setArbitrumMagic(
+        new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY, {
+          rpcURL:
+            "https://arb-rinkeby.g.alchemy.com/v2/dcHQmBXeODzbfJwhrI5dEALMDlPbKAlK",
+          chainId: 421611,
+        })
+      );
+    }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, logoutUser, loginUser, getToken }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        logoutUser,
+        loginUser,
+        getToken,
+        magic,
+        arbitrumMagic,
+        beforeLogout,
+        setBeforeLogout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

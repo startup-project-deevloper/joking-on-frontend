@@ -1,22 +1,28 @@
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { withRouter, useRouter } from "next/router";
+import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
+
 import { useEffect, useReducer } from "react";
 import { useUserAgent } from "next-useragent";
 
-import { AuthProvider } from "../contexts/auth";
+import FIND_VIDEO_QUERY from "../../graphql/queries/findUser";
+import FIND_USER_QUERY from "../../graphql/queries/findUser";
 
-import FIND_VIDEO_QUERY from "../graphql/queries/findUser";
-import FIND_USER_QUERY from "../graphql/queries/findUser";
-
-import { initializeApollo, addApolloState } from "../lib/apollo";
+import { initializeApollo, addApolloState } from "../../lib/apollo";
 
 import dynamic from "next/dynamic";
 
-const DesktopLayout = dynamic(() => import("../components/layout"));
-const MobileLayout = dynamic(() => import("../components/mobileLayout"));
+const DesktopLayout = dynamic(() => import("../../components/layout"));
 
-import HomeMobile from "../components/homeMobile";
-import HomeDesktop from "../components/homeDesktop";
+import Sidebar from "../../components/sidebar";
+import Layout from "../../components/layout";
+import ShopFilter from "../../components/shopFilter";
+import ShopItems from "../../components/shopItems";
 
-function Home({ user, videos, suggestions, styles, useragent }) {
+function Collectables({ user, videos, suggestions, styles, useragent }) {
   let ua = {
     isMobile: false,
   };
@@ -29,36 +35,43 @@ function Home({ user, videos, suggestions, styles, useragent }) {
     }
   }, [useragent]);
 
-  useEffect(() => {
-    const params = new URLSearchParams();
-    params.append("userId", user.id);
-    axios.send({
-      method: "post",
-      url: "http://localhost:1337/videos",
-      data: {},
-    });
-  }, [useragent]);
+  useEffect(() => {}, [useragent]);
+
+  const { loginUser, isUserLoggedIn } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    loginUser(input);
+  };
 
   return (
-    <>
-      {ua.isMobile ? (
-        <MobileLayout>
-          <HomeMobile />
-        </MobileLayout>
-      ) : (
-        <DesktopLayout>
-          <HomeDesktop />
-        </DesktopLayout>
-      )}
-    </>
+    <DesktopLayout>
+      <div class="min-w-screen flex">
+        <Head>
+          <title>Collectables</title>
+          <meta
+            name="description"
+            content="Visit here to view the collectables that are now available!"
+          />
+        </Head>
+
+        <ShopFilter />
+        <ShopItems />
+      </div>
+    </DesktopLayout>
   );
 }
-
-export default Home;
 
 const tempUserAuth = {
   where: {
     email: "patrick@unenunciate.com",
+  },
+};
+
+const tempVideosVars = {
+  where: {
+    id: 1,
   },
 };
 
@@ -168,9 +181,14 @@ export const getServerSideProps = async (context) => {
     query: FIND_USER_QUERY,
     variables: tempUserAuth,
   });
-  console.log(data);
+
+  const { data2, error } = await apolloClient.query({
+    query: FIND_VIDEO_QUERY,
+    variables: tempVideosVars,
+  });
 
   const user = data.users[0];
+  const videos = data2;
 
   return addApolloState(apolloClient, {
     props: {
@@ -185,14 +203,14 @@ export const getServerSideProps = async (context) => {
         { name: "improv" },
         { name: "prop" },
         { name: "shock" },
-        { name: "sitcom" },
         { name: "ventriloquism" },
         { name: "wit" },
         { name: "observational" },
         { name: "anecdotal" },
-        { name: "blue" },
       ],
       phase: { title: "feed", content: null, publicID: "" },
     },
   });
 };
+
+export default withRouter(Collectables);

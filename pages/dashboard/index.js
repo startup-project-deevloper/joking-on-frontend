@@ -1,22 +1,20 @@
 import { useEffect, useReducer } from "react";
 import { useUserAgent } from "next-useragent";
+import axios from "axios";
 
-import { AuthProvider } from "../contexts/auth";
+import FIND_VIDEO_QUERY from "../../graphql/queries/findUser";
+import FIND_USER_QUERY from "../../graphql/queries/findUser";
 
-import FIND_VIDEO_QUERY from "../graphql/queries/findUser";
-import FIND_USER_QUERY from "../graphql/queries/findUser";
-
-import { initializeApollo, addApolloState } from "../lib/apollo";
+import { initializeApollo, addApolloState } from "../../lib/apollo";
 
 import dynamic from "next/dynamic";
 
-const DesktopLayout = dynamic(() => import("../components/layout"));
-const MobileLayout = dynamic(() => import("../components/mobileLayout"));
+const DesktopLayout = dynamic(() => import("../../components/layout"));
+const MobileLayout = dynamic(() => import("../../components/mobileLayout"));
 
-import HomeMobile from "../components/homeMobile";
-import HomeDesktop from "../components/homeDesktop";
+import Dash from "../../components/dashboard";
 
-function Home({ user, videos, suggestions, styles, useragent }) {
+function Dashboard({ user, videos, suggestions, styles, useragent }) {
   let ua = {
     isMobile: false,
   };
@@ -30,10 +28,9 @@ function Home({ user, videos, suggestions, styles, useragent }) {
   }, [useragent]);
 
   useEffect(() => {
-    const params = new URLSearchParams();
+    const params = new window.URLSearchParams();
     params.append("userId", user.id);
-    axios.send({
-      method: "post",
+    axios.post({
       url: "http://localhost:1337/videos",
       data: {},
     });
@@ -43,22 +40,30 @@ function Home({ user, videos, suggestions, styles, useragent }) {
     <>
       {ua.isMobile ? (
         <MobileLayout>
-          <HomeMobile />
+          <div>
+            Please login to the desktop site for the comedian dashboard.
+          </div>
         </MobileLayout>
       ) : (
         <DesktopLayout>
-          <HomeDesktop />
+          <Dash></Dash>
         </DesktopLayout>
       )}
     </>
   );
 }
 
-export default Home;
+export default Dashboard;
 
 const tempUserAuth = {
   where: {
     email: "patrick@unenunciate.com",
+  },
+};
+
+const tempVideosVars = {
+  where: {
+    id: 1,
   },
 };
 
@@ -168,9 +173,18 @@ export const getServerSideProps = async (context) => {
     query: FIND_USER_QUERY,
     variables: tempUserAuth,
   });
-  console.log(data);
+
+  const { data2, error } = await apolloClient.query({
+    query: FIND_VIDEO_QUERY,
+    variables: tempVideosVars,
+  });
+
+  console.log(error);
 
   const user = data.users[0];
+  const videos = data2;
+
+  console.log(error);
 
   return addApolloState(apolloClient, {
     props: {
@@ -185,12 +199,10 @@ export const getServerSideProps = async (context) => {
         { name: "improv" },
         { name: "prop" },
         { name: "shock" },
-        { name: "sitcom" },
         { name: "ventriloquism" },
         { name: "wit" },
         { name: "observational" },
         { name: "anecdotal" },
-        { name: "blue" },
       ],
       phase: { title: "feed", content: null, publicID: "" },
     },

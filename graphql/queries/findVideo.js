@@ -1,8 +1,9 @@
 import gql from "graphql-tag";
 
 const FIND_VIDEO_QUERY = gql`
-  query pollVideos($where: JSON) {
-    Videos(where: $where) {
+  query findVideos($where: JSON) {
+    videos(where: $where) {
+      title
       laughers {
         username
         profilePhoto {

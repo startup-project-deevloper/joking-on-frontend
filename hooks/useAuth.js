@@ -1,35 +1,46 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { AuthContext } from "../contexts/auth";
 import { signOut } from "next-auth/client";
+import Router from "next/router";
 
 const useAuth = () => {
   const [cookie, setCookie] = useCookies("user");
   const { user, logoutUser, loginUser, getToken } = useContext(AuthContext);
-  const [countDownToReset, setCountDownToReset] = useState(900);
-
+  const [reset, setReset] = useState(false);
+  const timerRef = useRef(null);
   useEffect(() => {
-    let timer;
-    if (!timer || countDownToReset === 0) {
-      timer.setTimeout(function () {
-        if (cookie.load("exp") < new Date().getTime()) {
-          setCountDownToReset(0);
-          setCookie(
-            "user",
-            JSON.stringify({ user, token: getToken(), maxAge: 900 })
-          );
-        }
-      }, 900001);
+    if (!timerRef.current) {
+      setCookie(
+        "user",
+        JSON.stringify({ user, token: getToken(), maxAge: 900 })
+      );
     }
 
-    return () => timer?.clearTimeout();
-  }, [countDownToReset]);
+    if (!timerRef.current || reset) {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+      timerRef.current = setTimeout(() => {
+        setCookie(
+          "user",
+          JSON.stringify({ user, token: getToken(), maxAge: 900 })
+        );
+        setReset(true);
+      }, 900);
+    } else {
+      setReset(true);
+    }
+
+    return () => clearTimeout(timerRef.current);
+  }, [reset]);
 
   const logout = useCallback(() => {
-    setCookie(user.username);
+    setCookie(undefined);
     logoutUser();
     signOut(user);
-    router.push("/");
+
+    Router.push("/");
   });
 
   const isUserLoggedIn = useCallback(() => {

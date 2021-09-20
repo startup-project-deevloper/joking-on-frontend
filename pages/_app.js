@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { AuthProvider } from "../contexts/auth";
+import { LaughProvider } from "../contexts/laugh";
 import { CookiesProvider } from "react-cookie";
 
 const VR = dynamic(
@@ -38,9 +39,11 @@ function App({ Component, pageProps }) {
     <CookiesProvider>
       <ApolloProvider client={apolloClient}>
         <AuthProvider>
-          <CloudinaryContext.Provider value={cloudinaryCDN}>
-            <Component {...pageProps} />
-          </CloudinaryContext.Provider>
+          <LaughProvider>
+            <CloudinaryContext.Provider value={cloudinaryCDN}>
+              <Component {...pageProps} />
+            </CloudinaryContext.Provider>
+          </LaughProvider>
         </AuthProvider>
       </ApolloProvider>
     </CookiesProvider>
