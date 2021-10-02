@@ -1,11 +1,10 @@
-import { useQuery } from "@apollo/client";
-import FIND_VIDEO_QUERY from "../graphql/queries/findVideo";
 
 import Video from "./video";
 import Image from "next/image";
 import Link from "next/link";
 
-const Feed = ({ videos }) => {
+const Feed = () => {
+  const videos = [];
   return (
     <div className="flex flex-col content-center w-full h-screen px-4 pb-12 pr-32 overflow-y-scroll style-scrollbar overscroll-contain sm:w-4/6 remove-scrollbar">
       {videos.map((video) => {

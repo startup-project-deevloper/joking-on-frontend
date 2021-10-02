@@ -1,4 +1,3 @@
-import { data } from "autoprefixer";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,21 +8,24 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  useContext,
 } from "react";
 
-import { AuthContext } from "../contexts/auth";
+import useAuth from "../../hooks/useAuth";
 
-const Sidebar = ({ suggestions, styles }) => {
-  const { user } = useContext(AuthContext);
+const Sidebar = () => {
+
+  const suggestions = [];
+  const styles = [];
+
+  const { user } = useAuth();
+  const router = useRouter();
+
   const seeMoreSuggestionsButtonRef = useRef(null);
   const [seeMoreSuggestions, setSeeMoreSuggestions] = useState(false);
   const [renderedSuggestions, setRenderedSuggestions] = useState(
     suggestions.slice(0, 4)
   );
-
-  const router = useRouter();
-
+  
   const seeMoreStylesButtonRef = useRef(null);
   const [seeMoreStyles, setSeeMoreStyles] = useState(false);
   const [renderedStyles, setRenderedStyles] = useState(styles.slice(0, 6));

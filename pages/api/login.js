@@ -1,44 +1,19 @@
-import cookies from "cookies";
+import { Magic } from "@magic-sdk/admin";
 
-import findUser from "../../graphql/queries/findUser";
+let magic = new Magic(process.env.MAGIC_SECRET_KEY);
 
-import { getSession } from "next-auth/client";
+import withSession from "../../utils/session";
+import wrapper from "../../utils/wrapper";
 
-import { AuthContext } from "../../contexts/auth";
-import { useState, useContext } from "react";
+const Login = withSession(wrapper(async (req, res) => {
+  if (req.method !== "POST") return res.status(405).end();
 
-const Login = async ({ useragent }) => {
-  const [email, setEmail] = useState("");
-  const { logU } = useContext(AuthContext);
-  let ua = {
-    isMobile: false,
-  };
-  if (useragent) {
-    ua = useUserAgent(useragent);
-  }
-  useEffect(() => {
-    if (!useragent) {
-      ua = useUserAgent(window.navigator.userAgent);
-    }
-  }, [useragent]);
+  const did = magic.utils.parseAuthorizationHeader(req.headers.authorization);
+  const user = await magic.users.getMetadataByToken(did);
 
-  useEffect(() => {}, [useragent]);
+  res.cookie("user", user, { maxAge: 604800 });
 
-  try {
-  } catch (error) {
-    const { response: fetchResponse } = error;
-    res.status(fetchResponse?.status || 500).json(error.data);
-  }
-};
+  res.end();
+}));
 
-export const getServerSideProps = async ({ req, res }) => {
-  // Create a cookies instance
-  let headers = {};
-  const session = await getSession({ req });
-  if (session) {
-    headers = { Authorization: `Bearer ${session.jwt}` };
-  }
-  cookies.set("myCookieName", "some-value", {
-    httpOnly: true, // true by default
-  });
-};
+export default Login;

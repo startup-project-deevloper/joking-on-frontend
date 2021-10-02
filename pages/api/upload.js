@@ -1,7 +1,10 @@
 import Mux from "@mux/mux-node";
 const { Video } = new Mux(process.env.MUX_KEY);
 
-export default async function uploadHandler(req, res) {
+import withSession from "../../utils/session";
+import wrapper from "../../utils/wrapper";
+
+export default withSession(wrapper(async function uploadHandler(req, res) {
   const { method } = req;
 
   switch (method) {
@@ -24,4 +27,4 @@ export default async function uploadHandler(req, res) {
       res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
-}
+}))

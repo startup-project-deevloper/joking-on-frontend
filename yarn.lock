@@ -11363,6 +11363,13 @@ next-auth@^3.27.3:
     preact-render-to-string "^5.1.14"
     querystring "^0.2.0"
 
+next-cookie@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/next-cookie/-/next-cookie-2.7.0.tgz#38d0f972576b599354b3748d15b6d3bacb3352cb"
+  integrity sha512-YSnNkF+Y0Q8snp7nNNW5sU0ccmp8MmH7Xwi3h/TQbZnZT+uTdM8eTc5x3xTUWzycoVfZ5T411maS2UJE9Jsp8w==
+  dependencies:
+    universal-cookie "~4.0.4"
+
 next-iron-session@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/next-iron-session/-/next-iron-session-4.2.0.tgz#cad971389b0845ab4517d8b096dea817b022830f"
@@ -14273,10 +14280,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-swr@^0.5.5:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-0.5.6.tgz#70bfe9bc9d7ac49a064be4a0f4acf57982e55a31"
-  integrity sha512-Bmx3L4geMZjYT5S2Z6EE6/5Cx6v1Ka0LhqZKq8d6WL2eu9y6gHWz3dUzfIK/ymZVHVfwT/EweFXiYGgfifei3w==
+swr@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-1.0.1.tgz#15f62846b87ee000e52fa07812bb65eb62d79483"
+  integrity sha512-EPQAxSjoD4IaM49rpRHK0q+/NzcwoT8c0/Ylu/u3/6mFj/CWnQVjNJ0MV2Iuw/U+EJSd2TX5czdAwKPYZIG0YA==
   dependencies:
     dequal "2.0.2"
 
@@ -14947,7 +14954,7 @@ uniq@^1.0.0:
   resolved "https://registry.yarnpkg.com/uniq/-/uniq-1.0.1.tgz#b31c5ae8254844a3a8281541ce2b04b865a734ff"
   integrity sha1-sxxa6CVIRKOoKBVBzisEuGWnNP8=
 
-universal-cookie@^4.0.0:
+universal-cookie@^4.0.0, universal-cookie@~4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/universal-cookie/-/universal-cookie-4.0.4.tgz#06e8b3625bf9af049569ef97109b4bb226ad798d"
   integrity sha512-lbRVHoOMtItjWbM7TwDLdl8wug7izB0tq3/YVKhT/ahB4VDvWMyvnADfnJI8y6fSvsjh51Ix7lTGC6Tn4rMPhw==

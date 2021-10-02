@@ -1,14 +1,14 @@
 import MobileVideo from "./mobileVideo";
 
-const MobileFeed = ({ videos }) => {
+const MobileFeed = () => {
   return (
     <div
       className="z-[-1] bg-black min-h-screen min-w-screen remove-scrollbar overflow-y-scroll overscroll-contain snap-y snap-mandatory snap"
       dir="ltr"
     >
-      {videos.map((video) => {
-        return <MobileVideo data={video} />;
-      })}
+      
+        
+      
     </div>
   );
 };
