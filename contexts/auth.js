@@ -52,17 +52,6 @@ export const AuthProvider = ({ children }) => {
   const [variables, setVariables] = useState({ email: "" });
   const router = useRouter({ email: "" });
 
-  const [getUserData, { loading, data, error }] = useLazyQuery(
-    FIND_USER_QUERY,
-    {
-      variables,
-      onCompleted: (data) => {
-        setUser(data.users[0]);
-        signIn(data.users[0]);
-      },
-    }
-  );
-
   /**
    * Log the user in
    * @param {string} email
@@ -77,7 +66,7 @@ export const AuthProvider = ({ children }) => {
         },
       });
 
-      await getUserData();
+      
 
       router.push({
         path: "/",

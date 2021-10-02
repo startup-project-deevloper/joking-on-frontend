@@ -34,13 +34,15 @@ function App({ Component, pageProps }) {
     },
   });
 
+
+
   return (
     <CookiesProvider>
       <ApolloProvider client={apolloClient}>
         <AuthProvider>
-          <CloudinaryContext.Provider value={cloudinaryCDN}>
-            <Component {...pageProps} />
-          </CloudinaryContext.Provider>
+          
+          <Component {...pageProps} />
+          
         </AuthProvider>
       </ApolloProvider>
     </CookiesProvider>
