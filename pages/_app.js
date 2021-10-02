@@ -1,8 +1,5 @@
 import "../styles/globals.css";
 
-import { ApolloProvider } from "@apollo/client";
-import { useApollo } from "../lib/apollo";
-
 import CloudinaryContext from "../contexts/couldinary";
 
 import { Cloudinary } from "@cloudinary/base";

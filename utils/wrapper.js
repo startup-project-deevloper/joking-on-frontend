@@ -8,6 +8,7 @@ import cookie from './cookies';
        res.sendCookies = () => {
          res.setHeader('set-cookie', res.cookieArray);
        };
+      
        return handler(req, res, next);
     };
   };

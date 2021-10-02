@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { withRouter, useRouter } from "next/router";
 import { useUserAgent } from "next-useragent";
 import { useCookies } from "react-cookie";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
+import cookies from "next-cookies"
 import parseCookies from "../utils/parseCookies";
 import withSession from "../utils/session";
 import wrapper from "../utils/wrapper";
@@ -69,17 +70,18 @@ function Home({ user, useragent, cookies }) {
 
 export default withRouter(Home);
 
-export const getServerSideProps = withSession(wrapper(async (context) => {
+export const getServerSideProps = withSession(async (context) => {
   const {getToken} = useAuth();
   const res = axios.post('/api/login', Headers({Authorization: `Bearer ${getToken()}`}));
 
-  const c = parseCookies(res.data.cookieArray, context);
+  parseCookies(res.data.cookieArray, context);
+
+  context.res.headers.setHeader("Set-Cookie", c);
   
   return {
     props: {
       user,
       useragent: context.req.headers["user-agent"],
-      cookies: c,
     },
   };
-}))
+});
