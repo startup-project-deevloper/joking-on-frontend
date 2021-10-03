@@ -7,7 +7,7 @@ import useAuth from "../hooks/useAuth";
 import cookies from "next-cookies"
 import parseCookies from "../utils/parseCookies";
 import withSession from "../utils/session";
-import wrapper from "../utils/wrapper";
+import axios from "axios";
 
 import dynamic from "next/dynamic";
 
@@ -20,7 +20,7 @@ const MobileSidebar = dynamic(() => import("../components/mobileSidebar"));
 import Feed from "../components/feed";
 import Sidebar from "../components/sidebar";
 
-function Home({ user, useragent, cookies }) {
+function Home({useragent }) {
   const { isUserLoggedIn } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,12 +34,8 @@ function Home({ user, useragent, cookies }) {
     ua = useUserAgent(useragent);
   }
 
-  if (cookies) {
-    useCookies(cookies);
-  }
-
-  useEffect(() => {
-    if(!isUserLoggedIn() && router) {
+  useEffect(async () => {
+    if(!(await isUserLoggedIn()) && router) {
       router.push("/login");
     }
 
@@ -71,16 +67,8 @@ function Home({ user, useragent, cookies }) {
 export default withRouter(Home);
 
 export const getServerSideProps = withSession(async (context) => {
-  const {getToken} = useAuth();
-  const res = axios.post('/api/login', Headers({Authorization: `Bearer ${getToken()}`}));
-
-  parseCookies(res.data.cookieArray, context);
-
-  context.res.headers.setHeader("Set-Cookie", c);
-  
   return {
     props: {
-      user,
       useragent: context.req.headers["user-agent"],
     },
   };

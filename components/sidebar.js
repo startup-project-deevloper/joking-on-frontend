@@ -306,7 +306,7 @@ const Sidebar = () => {
             See More
           </button>
         </div>
-        <div class="flex flex-col items-center justify-center py-2">
+        <div className="flex flex-col items-center justify-center py-2">
           <div className="flex-wrap items-center justify-center hidden mb-24 text-sm md:flex md:w-2/3">
             <Link href="/about">
               <a className="px-4 py-2 my-2 rounded hover:bg-lemon-meringue ">

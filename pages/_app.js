@@ -1,9 +1,5 @@
 import "../styles/globals.css";
 
-import CloudinaryContext from "../contexts/couldinary";
-
-import { Cloudinary } from "@cloudinary/base";
-
 import React, { useEffect, useState } from "react";
 
 import Head from "next/head";
@@ -20,29 +16,14 @@ const VR = dynamic(
 );
 
 function App({ Component, pageProps }) {
-  const apolloClient = useApollo(pageProps);
-
-  const cloudinaryCDN = new Cloudinary({
-    cloud: {
-      cloudName: "joking-on",
-    },
-    url: {
-      secureDistribution: "www.jokingon.com",
-      secure: true,
-    },
-  });
 
   return (
     <CookiesProvider>
-      <ApolloProvider client={apolloClient}>
         <AuthProvider>
-          <LaughProvider>
-            <CloudinaryContext.Provider value={cloudinaryCDN}>
+          
               <Component {...pageProps} />
-            </CloudinaryContext.Provider>
-          </LaughProvider>
+          
         </AuthProvider>
-      </ApolloProvider>
     </CookiesProvider>
   );
 }

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { withRouter, useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 
 import { LOGO } from "../constrants";
@@ -17,11 +17,13 @@ const Login = () => {
     loginUser(input);
   };
 
+  useEffect(async () => {
   if (typeof window !== "undefined") {
-    if (isUserLoggedIn()) {
+    if (false !== (await isUserLoggedIn())) {
       router.push("/");
     }
   }
+  }, []);
 
   return (
     <div>

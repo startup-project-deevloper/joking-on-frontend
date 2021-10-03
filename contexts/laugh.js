@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./auth";
 
@@ -37,6 +37,7 @@ export const LaughProvider = ({ children }) => {
   setBeforeLogout([...beforeLogout, finalizeSession]);
 
   const initializeSession = useCallback(async () => {
+    try{
     record();
     setSession(
       (
@@ -46,6 +47,9 @@ export const LaughProvider = ({ children }) => {
         )
       ).data.session[0]
     );
+        } catch(err){
+            console.log(err)
+        }
   }, []);
 
   const updateSession = useCallback(async () => {
@@ -56,10 +60,14 @@ export const LaughProvider = ({ children }) => {
   }, []);
 
   const prepStrapiLaughPoint = useCallback(async () => {
+    try{
     return await axios.post(
       `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughPoints`,
       { session: session.id, user: user.id }
     );
+    } catch(e){
+      console.log(e);
+    }
   }, []);
 
   const checkHasLaughedAtBefore = useCallback(async (video) => {

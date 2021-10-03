@@ -1,10 +1,8 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import { Magic } from "magic-sdk";
 import { useRouter } from "next/router";
-import { useLazyQuery } from "@apollo/client";
-import { signIn } from "next-auth/client";
-
-import FIND_USER_QUERY from "../graphql/queries/findUser";
+import parseCookies from "../utils/parseCookies";
+import axios from "axios";
 
 export const AuthContext = createContext(null);
 
@@ -48,33 +46,38 @@ const tempQuery = {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(tempQuery);
-  const [magic, setMagic] = useState(null);
-  const [arbitrumMagic, setArbitrumMagic] = useState(null);
-  const [variables, setVariables] = useState({ email: "" });
-  const router = useRouter({ email: "" });
+  const router = useRouter();
   const [beforeLogout, setBeforeLogout] = useState([]);
-
-
+  const [magicUser, setMagicUser] = useState(null);
   /**
    * Log the user in
    * @param {string} email
    */
   const loginUser = useCallback(async (email) => {
     try {
-      const didToken = await magic.auth.loginWithMagicLink({ email: email });
-      await arbitrumMagic.auth.loginWithMagicCredentials({ token: didToken });
-      setVariables({
-        where: {
-          email: email,
-        },
-      });
-
+      const did = await magic.auth.loginWithMagicLink({ email: email });
+      const address = (await magic.user.getMetadata()).publicAddress;
+      const u = await axios({method:'get', url:'http://strapi.jokingon.com/users/me', headers: {'Authorization': `Bearer ${did}`}});
+      parseCookies(
+        (
+          await axios({
+            method: "post",
+            url: `${
+              process.env.NEXT_PUBLIC_MODE === "production"
+                ? "https://app.jokingon.com/api/login"
+                : "http://localhost:3000/api/login"
+            }`,
+            data: { id: u.data.id },
+            headers: { Authorization: `Bearer ${await getToken()}` },
+          })
+        ).body.cookieArray
+      );
       
-
-      router.push({
+      /*router.push({
         path: "/",
         query: { username: user.username, token: getToken() },
       });
+      */
     } catch (err) {
       console.log(err);
     }
@@ -101,6 +104,7 @@ export const AuthProvider = ({ children }) => {
   const getToken = useCallback(async () => {
     try {
       const token = await magic.user.getIdToken();
+      console.log(token);
       return token;
     } catch (err) {
       console.log(err);
@@ -108,21 +112,17 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
+
+
   /**
    * Reload user login on app refresh
    */
   useEffect(() => {
-    if (magic === null) {
-      setMagic(new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY));
-      setArbitrumMagic(
-        new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY, {
-          rpcURL:
-            "https://arb-rinkeby.g.alchemy.com/v2/dcHQmBXeODzbfJwhrI5dEALMDlPbKAlK",
-          chainId: 421611,
-        })
-      );
+    if (!magic) {
+      magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY);
     }
-  }, []);
+    console.log("magic user",magicUser);
+  }, [magicUser]);
 
   return (
     <AuthContext.Provider
@@ -132,7 +132,6 @@ export const AuthProvider = ({ children }) => {
         loginUser,
         getToken,
         magic,
-        arbitrumMagic,
         beforeLogout,
         setBeforeLogout,
       }}
