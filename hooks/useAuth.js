@@ -13,6 +13,7 @@ const useAuth = () => {
     signOut(user);
     Router.push("/");
   });
+  
 
   const isUserLoggedIn = useCallback(async () => {
     return  null !== (await getToken());
