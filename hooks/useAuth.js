@@ -11,7 +11,6 @@ const useAuth = () => {
     setCookie(undefined);
     logoutUser();
     signOut(user);
-
     Router.push("/");
   });
 
