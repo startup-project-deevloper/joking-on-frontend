@@ -57,7 +57,16 @@ export const AuthProvider = ({ children }) => {
     try {
       const did = await magic.auth.loginWithMagicLink({ email: email });
       const address = (await magic.user.getMetadata()).publicAddress;
-      const u = await axios({method:'get', url:'http://strapi.jokingon.com/users/me', headers: {'Authorization': `Bearer ${did}`}});
+      const u = await axios({
+        method: "get",
+        url: "https://strapi.jokingon.com/users/me",
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      console.log(await getToken());
       parseCookies(
         (
           await axios({
