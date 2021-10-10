@@ -31,9 +31,10 @@ const isOpenReducer = (state, action) => {
 
 const Layout = ({ children }) => {
   const { user } = useContext(AuthContext);
+  console.log(user);
   const profilePhoto = {
     key: user.username,
-    value: user.profilePhoto.url,
+    value: user?.profilePhoto?.url,
   };
 
   const [isOpenState, isOpenDispatch] = useReducer(isOpenReducer, {
@@ -99,7 +100,7 @@ const Layout = ({ children }) => {
     <>
       <nav
         ref={navRef}
-        className="flex h-16 min-w-full px-4 border-b-2 border-black bg-maximum-red"
+        className="flex h-[10vh] min-w-full px-4 border-b-2 border-black bg-maximum-red"
       >
         <ul className="flex justify-between h-full min-w-full">
           <div className="flex items-center cursor-pointer justify-items-start">
@@ -115,7 +116,7 @@ const Layout = ({ children }) => {
             </Link>
           </div>
           <div className="flex">
-            {user.isComedian ? <NavItem type={CLOUD_UPLOAD} /> : <></>}
+            <NavItem type={CLOUD_UPLOAD} action={() => router.push('/dashboard')} isOpenDispatch={() => null} />
             <NavItem type={BELL} />
             <NavItem type={CHAT} />
 

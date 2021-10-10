@@ -141,9 +141,9 @@ const Sidebar = () => {
   return (
     <div
       ref={sidebarRef}
-      className="flex h-screen min-w-[56px] sm:w-1/4 xl:w-1/3 border-r-2 border-black overflow-y-scroll overscroll-contain style-scrollbar justify-items-center remove-scrollbar"
+      className="flex h-[90vh] min-w-[56px] sm:w-1/4 xl:w-1/3 border-r-2 border-black overflow-y-scroll overscroll-contain style-scrollbar justify-items-center remove-scrollbar"
     >
-      <div className="flex flex-col items-center w-full min-h-full mt-8 ">
+      <div className="flex flex-col items-center w-full min-h-full pt-8 ">
         {/*finerprint*/}
         <div className="flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center w-full pb-1">

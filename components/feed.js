@@ -6,7 +6,7 @@ import Link from "next/link";
 const Feed = () => {
   const videos = [];
   return (
-    <div className="flex flex-col content-center w-full h-screen px-4 pb-12 pr-32 overflow-y-scroll style-scrollbar overscroll-contain sm:w-4/6 remove-scrollbar">
+    <div className="flex flex-col content-center w-full h-[90vh] px-4 pb-12 pr-32 overflow-y-scroll style-scrollbar overscroll-contain sm:w-2/3 remove-scrollbar">
       {videos.map((video) => {
         return (
           <div key={video.uid} className="flex border-b-2 border-black ">

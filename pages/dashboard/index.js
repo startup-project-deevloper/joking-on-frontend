@@ -1,40 +1,34 @@
 import { useEffect, useReducer } from "react";
+import { withRouter, useRouter } from "next/router";
+import Link from 'next/link'
 import { useUserAgent } from "next-useragent";
 import axios from "axios";
 
-import FIND_VIDEO_QUERY from "../../graphql/queries/findUser";
-import FIND_USER_QUERY from "../../graphql/queries/findUser";
-
-import { initializeApollo, addApolloState } from "../../lib/apollo";
+import useAuth from '../../hooks/useAuth';
 
 import dynamic from "next/dynamic";
 
 const DesktopLayout = dynamic(() => import("../../components/layout"));
 const MobileLayout = dynamic(() => import("../../components/mobileLayout"));
 
-import Dash from "../../components/dashboard";
-
-function Dashboard({ user, videos, suggestions, styles, useragent }) {
+function Dashboard({ useragent }) {
+  const {user, isUserLoggedIn} = useAuth();
+  const router = useRouter();
   let ua = {
     isMobile: false,
   };
   if (useragent) {
     ua = useUserAgent(useragent);
   }
-  useEffect(() => {
-    if (!useragent) {
-      ua = useUserAgent(window.navigator.userAgent);
-    }
-  }, [useragent]);
+   useEffect(async () => {
+     if (user.username === "") {
+       router.push("/login");
+     }
 
-  useEffect(() => {
-    const params = new window.URLSearchParams();
-    params.append("userId", user.id);
-    axios.post({
-      url: "http://localhost:1337/videos",
-      data: {},
-    });
-  }, [useragent]);
+     if (!useragent) {
+       ua = useUserAgent(window.navigator.userAgent);
+     }
+   }, [useragent, router, isUserLoggedIn, user]);
 
   return (
     <>
@@ -46,14 +40,22 @@ function Dashboard({ user, videos, suggestions, styles, useragent }) {
         </MobileLayout>
       ) : (
         <DesktopLayout>
-          <Dash></Dash>
+          <div className="w-full h-[90vw] flex flex-col justify-center items-center space-y-4">
+          <Link href="/upload">
+          <a className="px-4 py-2 bg-black rounded text-lemon-meringue active:scale-75">Upload</a>
+          
+          </Link>
+          <Link href="/create">
+          <a className="px-4 py-2 bg-black rounded text-lemon-meringue active:scale-75">Create Joke NFT</a>
+          </Link>
+          </div>
         </DesktopLayout>
       )}
     </>
   );
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);
 
 const tempUserAuth = {
   where: {
@@ -167,31 +169,11 @@ const tempVideos = [
 ];
 
 export const getServerSideProps = async (context) => {
-  const apolloClient = initializeApollo();
 
-  const { data } = await apolloClient.query({
-    query: FIND_USER_QUERY,
-    variables: tempUserAuth,
-  });
 
-  const { data2, error } = await apolloClient.query({
-    query: FIND_VIDEO_QUERY,
-    variables: tempVideosVars,
-  });
-
-  console.log(error);
-
-  const user = data.users[0];
-  const videos = data2;
-
-  console.log(error);
-
-  return addApolloState(apolloClient, {
+  return {
     props: {
-      user: user,
-      videos: tempVideos,
       useragent: context.req.headers["user-agent"],
-      suggestions: [user, user, user, user, user, user, user, user, user, user],
       styles: [
         { name: "slapstick" },
         { name: "cringe" },
@@ -204,7 +186,6 @@ export const getServerSideProps = async (context) => {
         { name: "observational" },
         { name: "anecdotal" },
       ],
-      phase: { title: "feed", content: null, publicID: "" },
     },
-  });
+  };
 };

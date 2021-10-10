@@ -1,5 +1,6 @@
 import { Magic } from "@magic-sdk/admin";
 import axios from "axios";
+import { getStrapiURL } from "../../lib/strapi";
 
 let magic = new Magic(process.env.MAGIC_SECRET_KEY);
 
@@ -9,16 +10,34 @@ import wrapper from "../../utils/wrapper";
 const Login = withSession(wrapper(async (req, res) => {
   if (req.method !== "POST") return res.status(405).end();
 
-
   const did = magic.utils.parseAuthorizationHeader(req.headers.authorization);
   const user = await magic.users.getMetadataByToken(did);
-  const sessionId = Math.random()*1000000;
-  const response = await axios({method: "PUT", url: `${process.env.NEXT_PUBLIC_MODE=== "production" ? 'https://strapi.jokingon.com/users/setNextSession': 'http://localhost:1337/users/setNextSession'}`, data:{ id:req.body.id, sessionId: sessionId}, headers: {}});
 
-  console.log(response.status);
+  const verify = await axios({method:'post', url: getStrapiURL("users/verify"), data: JSON.stringify({email: user.email}), headers:{"Content-Type": 'application/json'}})
+  if(verify.status === 200) {
+    const token = req.headers.authorization.substring(7);
+    const cycleToken = await axios({
+      method: "post",
+      url: getStrapiURL("users/verify"),
+      data: JSON.stringify({
+        token: token,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
 
-  res.cookie("user", user, { maxAge: 604800 });
-  res.cookie("session", { id: sessionId }, { maxAge: 604800 });
+    if(cycleToken.status === 200) {
+      res.cookie("user", verify.data, { maxAge: 604800 });
+      res.cookie("magic", token, { maxAge: 900 } )
+    }
+  } else {
+    const verify = await axios({
+      method: "post",
+      url: getStrapiURL("users/verify"),
+      data: JSON.stringify({ email: user.email }),
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  
 
   return res.json({
     user: user,

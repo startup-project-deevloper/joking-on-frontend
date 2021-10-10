@@ -5,19 +5,22 @@ import React from "react";
 import { OPEN, CLOSE } from "../constrants";
 
 const NavItem = React.forwardRef(
-  ({ children, type, isOpenState, isOpenDispatch }, ref) => {
+  ({ children, type, isOpenState, isOpenDispatch, action }, ref) => {
     return (
       <>
         <li ref={ref} className="flex items-center justify-items-end">
           <a
             href="#"
             className="flex items-center p-1 m-1 bg-lemon-meringue rounded-3xl justify-items-center filter hover:brightness-125 ring-2 ring-black"
-            onClick={() =>
+            onClick={() => {
               isOpenDispatch(
                 isOpenState?.state?.open ? { type: CLOSE } : { type: OPEN }
               )
+              action? action() : () => null;
+            }
             }
           >
+            {type?.value ?
             <Image
               src={type.value}
               alt={type.key}
@@ -25,6 +28,9 @@ const NavItem = React.forwardRef(
               height={24}
               className={`h-full rounded-full`}
             />
+            :
+            <div></div>
+          }
           </a>
         </li>
         {isOpenState?.state?.open && children}

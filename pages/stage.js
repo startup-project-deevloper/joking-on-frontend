@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { withRouter, useRouter } from "next/router";
 import { useUserAgent } from "next-useragent";
 import { useCookies } from "react-cookie";
 import useAuth from "../hooks/useAuth";
 
-import cookies from "next-cookies"
+import cookies from "next-cookies";
 import parseCookies from "../utils/parseCookies";
 import withSession from "../utils/session";
 import axios from "axios";
+
+
+import { Container } from "@angle-technologies/react-components";
 
 import dynamic from "next/dynamic";
 
@@ -20,9 +23,12 @@ const MobileSidebar = dynamic(() => import("../components/mobileSidebar"));
 import Feed from "../components/feed";
 import Sidebar from "../components/sidebar";
 
-function Home({useragent }) {
+function Stage({ useragent }) {
+    console.log();
   const { user, isUserLoggedIn, getStrapiToken } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+
+  const stageRef = useRef(null);
 
   const router = useRouter();
 
@@ -35,19 +41,18 @@ function Home({useragent }) {
   }
 
   useEffect(async () => {
+    
     console.log(await isUserLoggedIn());
     if (router && (await isUserLoggedIn())) {
       console.log(user);
-      if(user.isSetup === false || user.isSetup === null) {
+      if (user.isSetup === false || user.isSetup === null) {
         router.push("/setup");
       }
     }
-    
-    
+
     if (!useragent) {
       ua = useUserAgent(window.navigator.userAgent);
     }
-
   }, [useragent, router, isUserLoggedIn, user]);
 
   useEffect(() => {}, [useragent]);
@@ -61,15 +66,19 @@ function Home({useragent }) {
         </MobileLayout>
       ) : (
         <DesktopLayout>
-          <Feed />
           <Sidebar />
+          <div ref={stageRef} id="stage" name="stage" className="min-w-full min-h-screen">
+              <div>
+                  
+              </div>
+          </div>
         </DesktopLayout>
       )}
     </>
   );
 }
 
-export default withRouter(Home);
+export default withRouter(Stage);
 
 export const getServerSideProps = withSession(async (context) => {
   return {
