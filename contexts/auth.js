@@ -130,24 +130,28 @@ export const AuthProvider = ({ children }) => {
 
 
   const customNodeOptions = {
-    rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
-    chainId: 43113,
+    rpcUrl:
+      "https://avax-mainnet.gateway.pokt.network/v1/lb/6158adc924faff00344dc9fa",
+    chainId: 43114,
   };
   /**
    * Reload user login on app refresh
    */
   useEffect(async () => {
     if (magic === null) {
-      setMagic(new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY, {
-        extensions: {
-          xchain: new AvalancheExtension({
-            rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
-            chainId: 'X',
-            networkId: 1, // Avalanche networkId
-          }),
-        },
-        network: customNodeOptions
-      }));
+      setMagic(
+        new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY, {
+          extensions: {
+            xchain: new AvalancheExtension({
+              rpcUrl:
+                "https://avax-mainnet.gateway.pokt.network/v1/lb/6158adc924faff00344dc9fa",
+              chainId: "X",
+              networkId: 1, // Avalanche networkId
+            }),
+          },
+          network: customNodeOptions,
+        })
+      );
     }
 
     if(magic) {
