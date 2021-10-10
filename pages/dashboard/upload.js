@@ -29,7 +29,7 @@ const Upload = ({ useragent }) => {
   }
 
   useEffect(async () => {
-    if (user.username === "") {
+    if (false !== (await isUserLoggedIn())) {
       router.push("/login");
     }
 

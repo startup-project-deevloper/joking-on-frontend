@@ -61,7 +61,7 @@ function Home({useragent }) {
       ) : (
         <DesktopLayout>
           <div
-            className="min-w-full min-h-screen"
+            className="w-full min-h-screen"
           >
             <div></div>
           </div>

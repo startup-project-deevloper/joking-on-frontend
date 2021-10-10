@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }) => {
     beforeLogout.map((fn) => fn());
     try {
       await magic.user.logout();
-      setUser(null);
+      setUser(userSkeleton);
       setUserCookie("user", undefined);
       setStrapiCookie("strapi", undefined);
       router.push("/login");

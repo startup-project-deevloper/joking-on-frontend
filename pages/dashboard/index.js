@@ -41,14 +41,25 @@ function Dashboard({ useragent }) {
         </MobileLayout>
       ) : (
         <DesktopLayout>
-          <div className="w-full h-[90vw] flex flex-col justify-center items-center space-y-4">
-          <Link href="/upload">
-          <a className="px-4 py-2 bg-black rounded text-lemon-meringue active:scale-75">Upload</a>
-          
-          </Link>
-          <Link href="/create">
-          <a className="px-4 py-2 bg-black rounded text-lemon-meringue active:scale-75">Create Joke NFT</a>
-          </Link>
+          <div className="flex flex-col items-center justify-center w-full h-[90vh] space-y-4">
+            <div className="flex flex-col items-center w-1/2 space-y-4 sm:1/3 lg:w-1/6 h-1/3">
+              <Link
+                href="/dashboard/upload"
+                className="flex w-2/3 sm:w-1/2 lg:w-1/6"
+              >
+                <a className="w-full px-4 py-2 text-center bg-black rounded text-lemon-meringue active:scale-75">
+                  Upload
+                </a>
+              </Link>
+              <Link
+                href="/dashboard//create"
+                className="flex w-2/3 sm:w-1/2 lg:w-1/6"
+              >
+                <a className="w-full px-4 py-2 text-center bg-black rounded text-lemon-meringue active:scale-75">
+                  Create Joke NFT
+                </a>
+              </Link>
+            </div>
           </div>
         </DesktopLayout>
       )}

@@ -16,7 +16,7 @@ import {
 } from "../constrants";
 
 import { useContext, useEffect, useReducer, useRef } from "react";
-import { AuthContext } from "../contexts/auth";
+import useAuth from "../hooks/useAuth";
 
 const isOpenReducer = (state, action) => {
   switch (action.type) {
@@ -30,7 +30,7 @@ const isOpenReducer = (state, action) => {
 };
 
 const Layout = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const { user , logoutUser} = useAuth();
   console.log(user);
   const profilePhoto = {
     key: user.username,
@@ -116,8 +116,16 @@ const Layout = ({ children }) => {
             </Link>
           </div>
           <div className="flex">
-            <NavItem type={CLOUD_UPLOAD} action={() => router.push('/dashboard')} isOpenDispatch={() => null} />
-            <NavItem type={BELL} />
+            <NavItem
+              type={CLOUD_UPLOAD}
+              action={() => router.push("/dashboard")}
+              isOpenDispatch={() => null}
+            />
+            <NavItem
+              type={BELL}
+              action={() => logoutUser()}
+              isOpenDispatch={() => null}
+            />
             <NavItem type={CHAT} />
 
             <NavItem
