@@ -45,7 +45,7 @@ const Upload = ({ useragent }) => {
 
         const formData = new FormData();
 
-        const formElements = formElement.elements;
+        const formElements = formRef.current.elements;
 
         const data = {
           title: title,

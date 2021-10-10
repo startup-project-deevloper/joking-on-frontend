@@ -39,7 +39,7 @@ function Home({useragent }) {
     if (router && (await isUserLoggedIn())) {
       console.log(user);
       if(user.isSetup === false || user.isSetup === null) {
-        router.push("/setup");
+        router.push("/signup");
       }
     }
     

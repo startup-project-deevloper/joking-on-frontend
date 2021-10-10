@@ -38,14 +38,13 @@ function SignUp({ useragent }) {
     const data = {
       email: (await magic.user.getMetadata()).email,
       username: username,
-      password: password,
       firstName: firstName,
       lastName: lastName,
       address: (await magic.user.getMetadata()).publicAddress,
       bio: bio,
       joinDate: Date.now(),
       xChainAddress: await magic.xchain.publicAddress,
-      isComedian: false,
+      isComedian: isComedian,
       contactEmail: (await magic.user.getMetadata()).email,
       isSetup: true,
       token: await getToken(),
@@ -54,7 +53,10 @@ function SignUp({ useragent }) {
     const result = await axios({
       method: "post",
       data: data,
-      url: getStrapiURL("auth/local/register"),
+      url: `${process.env.NEXT_PUBLIC_MODE === 'production' ? 'https://app.jokingon.com' : 'http://localhost:3000' }/signup`,
+      headers: {
+        authorization: `Bearer ${data.token}`,
+      }
     });
 
     
@@ -85,16 +87,16 @@ function SignUp({ useragent }) {
       ) : (
         <DesktopLayout>
           <div className="flex flex-col items-center justify-center min-w-full min-h-[90vh]">
-            <form className="flex flex-col items-center justify-center">
-              <div className="flex flex-col my-4">
+            <form className="flex flex-col items-center justify-center w-full py-12 space-y-4">
+              <div className="flex flex-col items-center w-full space-y-4">
                 <label>Email</label>
                 <input
-                  type="password"
-                  className="my-4 text-center placeholder-black rounded outline-none bg-lemon-meringue ring-2 ring-black"
+                  type="text"
+                  className="w-2/3 h-12 my-4 text-center placeholder-black rounded outline-none bg-lemon-meringue ring-2 ring-black"
                   onChange={(e) => setEmail(e.target.value)}
                 ></input>
                 <button
-                  className="px-4 py-2 my-2 bg-black active:scale-75 text-lemon-meringue"
+                  className="w-24 py-2 bg-black rounded active:scale-75 text-lemon-meringue"
                   onClick={() => {
                     loginUser(email);
                     setEmailVerified(true);
@@ -103,57 +105,62 @@ function SignUp({ useragent }) {
                   Verify
                 </button>
               </div>
-              <div className="flex flex-col my-4">
-                <label>Password</label>
-                <input
-                  disabled={emailVerified}
-                  type="password"
-                  className="my-4 text-center placeholder-black rounded outline-none bg-lemon-meringue ring-2 ring-black"
-                  onChange={(e) => setPassword(e.target.value)}
-                ></input>{" "}
-              </div>
-              <div className="flex flex-col my-4">
+              <div className="flex flex-col items-center w-full space-y-4">
                 <label>First Name</label>
                 <input
-                  disabled={emailVerified}
-                  className="my-4 text-center placeholder-black rounded outline-none bg-lemon-meringue ring-2 ring-black"
+                  disabled={!emailVerified}
+                  className="w-2/3 h-12 my-4 text-center placeholder-black rounded outline-none bg-lemon-meringue ring-2 ring-black"
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col my-4">
+              <div className="flex flex-col items-center w-full space-y-4">
                 <label>Last Name</label>
                 <input
-                  disabled={emailVerified}
-                  className="my-4 text-center placeholder-black rounded outline-none bg-lemon-meringue ring-2 ring-black"
+                  disabled={!emailVerified}
+                  className="w-2/3 h-12 my-4 text-center placeholder-black rounded outline-none bg-lemon-meringue ring-2 ring-black"
                   onChange={(e) => setLastName(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col min-w-full my-4">
+              <div className="flex flex-col items-center min-w-full space-y-4">
                 <label>Bio</label>
-                <input
-                  disabled={emailVerified}
-                  type="textarea"
-                  className="w-2/3 h-32 my-4 text-center placeholder-black rounded outline-none sm:w-1/3 bg-lemon-meringue ring-2 ring-black"
+                <textarea
+                  disabled={!emailVerified}
+                  rows={5}
+                  cols={60}
+                  name="bio"
+                  className="w-2/3 my-4 placeholder-black rounded outline-none h-44 sm:w-1/3 bg-lemon-meringue ring-2 ring-black"
                   onChange={(e) => setBio(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col my-4">
+              <div className="flex flex-col items-center w-full space-y-4">
                 <label>Would you like to signup as a comedian?</label>
                 <select
-                  disabled={emailVerified}
+                  className="w-2/3 text-black bg-lemon-meringue font-bond"
+                  disabled={!emailVerified}
                   onChange={(e) => {
                     e.target.value === "Yes"
                       ? setIsComedian(true)
                       : setIsComedian(false);
                   }}
                 >
-                  <opinion value="No">No</opinion>
-                  <opinion value="Yes">Yes</opinion>
+                  <option
+                    className="font-bold text-black"
+                    value="No"
+                    name="No"
+                    id="No"
+                  >No</option>
+
+                  <option
+                    className="font-bold text-black"
+                    value="Yes"
+                    name="Yes"
+                    id="Yes"
+                  >Yes</option>
                 </select>
               </div>
               <button
-                disabled={emailVerified}
-                className="px-4 py-2 bg-black rounded ring-2 ring-black hover:bg-black text-lemon-meringue active:scale-75"
+                disabled={!emailVerified}
+                className="w-24 px-4 py-2 bg-black rounded ring-2 ring-black text-lemon-meringue active:scale-75"
                 onClick={async (e) => {
                   e.preventDefault();
                   await handleSubmit();

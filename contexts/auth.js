@@ -54,9 +54,11 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(userSkeleton);
   const router = useRouter();
   const [magic, setMagic] = useState(null);
+  const [magicTimer, setMagicTimer] = useState(null);
   const [beforeLogout, setBeforeLogout] = useState([]);
   const [magicCookie, setMagicCookie] = useCookies("magic");
   const [userCookie, setUserCookie] = useCookies("user");
+  
   /**
    * Log the user in
    * @param {string} email
@@ -79,16 +81,12 @@ export const AuthProvider = ({ children }) => {
           })
         ).data.cookieArray, ["magic","user"]
       );
-
-       
         if (!userCookie?.user.isSetup) {
           setUser(userCookie.user);
           router.push({
             path: "/setup",
           });
         }
-
-
       } catch (e) {
         console.log(e)
       }
@@ -155,12 +153,20 @@ export const AuthProvider = ({ children }) => {
     if(magic) {
       magic.preload();
     }
+
+    if(magicCookie?.token && !magicTimer) {
+      setMagicTimer(setTimeout(async () => {
+        setMagicCookie({token: await getToken()});
+        setMagicTimer(null);
+      }, 900))
+    }
     
     if ((user.username !== "" || !userCookie?.user) && magicCookie?.token && magic && !magic.auth.isUserLoggedIn) {
       if (user.username === "" & userCookie?.user) {
         setUser(userCookie.user);
        } else if (user.username !== "") {
         try {
+          magic.auth.loginWithCredentials(magicCookie.token);
           parseCookies(
             (
               await axios({
@@ -173,7 +179,7 @@ export const AuthProvider = ({ children }) => {
                 headers: { Authorization: `Bearer ${await magicCookie.token}` },
               })
             ).data.cookieArray,
-            ["magic", "user"]
+            ["magic", "user"],
           );
           if (u.status === 200) {
             setUser(u.data);
@@ -184,7 +190,7 @@ export const AuthProvider = ({ children }) => {
         }
       }
     }
-  }, [magic, user, userCookie, magicCookie]);
+  }, [magic, user, userCookie, magicCookie, magicTimer]);
 
   return (
     <AuthContext.Provider

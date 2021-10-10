@@ -13,34 +13,29 @@ const Login = withSession(wrapper(async (req, res) => {
   const did = magic.utils.parseAuthorizationHeader(req.headers.authorization);
   const user = await magic.users.getMetadataByToken(did);
 
-  const verify = await axios({method:'post', url: getStrapiURL("users/verify"), data: JSON.stringify({email: user.email}), headers:{"Content-Type": 'application/json'}})
+  const verify = await axios({method:'post', url: getStrapiURL("users/verify/"), data: JSON.stringify({email: user.email}), headers:{"Content-Type": 'application/json', authorization: `Bearer ${process.env.NEXT_JWT}`}})
   if(verify.status === 200) {
     const token = req.headers.authorization.substring(7);
-    const cycleToken = await axios({
-      method: "post",
-      url: getStrapiURL("users/verify"),
-      data: JSON.stringify({
-        token: token,
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if(cycleToken.status === 200) {
-      res.cookie("user", verify.data, { maxAge: 604800 });
-      res.cookie("magic", token, { maxAge: 900 } )
-    }
+    res.cookie(
+      "user",
+      (await axios({
+        method: "get",
+        url: getStrapiURL("users/me"),
+        headers: {
+          "Accepts": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      })).data,
+      { maxAge: 604800 }
+    );
+    res.cookie("magic", token, { maxAge: 900 } )
   } else {
-    const verify = await axios({
-      method: "post",
-      url: getStrapiURL("users/verify"),
-      data: JSON.stringify({ email: user.email }),
-      headers: { "Content-Type": "application/json" },
-    });
+    res.status(422).end()
   }
   
 
   return res.json({
-    user: user,
+    user: {...user, id: verify.data.id},
     cookieArray: res.cookieArray,
   });
 }));
