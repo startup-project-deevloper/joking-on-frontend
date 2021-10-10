@@ -14,6 +14,7 @@ const MobileLayout = dynamic(() => import("../../components/mobileLayout"));
 function Dashboard({ useragent }) {
   const {user, isUserLoggedIn} = useAuth();
   const router = useRouter();
+  
   let ua = {
     isMobile: false,
   };
