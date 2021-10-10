@@ -21,8 +21,7 @@ import Feed from "../components/feed";
 import Sidebar from "../components/sidebar";
 
 function Home({useragent }) {
-  const { user, isUserLoggedIn, getStrapiToken } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
+  const { user, isUserLoggedIn } = useAuth();
 
   const router = useRouter();
 
@@ -61,7 +60,11 @@ function Home({useragent }) {
         </MobileLayout>
       ) : (
         <DesktopLayout>
-          <Feed />
+          <div
+            className="min-w-full min-h-screen"
+          >
+            <div></div>
+          </div>
           <Sidebar />
         </DesktopLayout>
       )}
