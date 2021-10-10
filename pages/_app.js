@@ -8,13 +8,6 @@ import { AuthProvider } from "../contexts/auth";
 import { LaughProvider } from "../contexts/laugh";
 import { CookiesProvider } from "react-cookie";
 
-const VR = dynamic(
-  () => {
-    return import("../components/vr");
-  },
-  { ssr: false }
-);
-
 function App({ Component, pageProps }) {
 
   return (

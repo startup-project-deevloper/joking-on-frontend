@@ -1,16 +1,16 @@
 import {useRef, useEffect, useState} from 'react';  
 import { withRouter, useRouter } from "next/router";
 import { useUserAgent } from "next-useragent";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 import withSession from "../utils/session";
 
 import dynamic from "next/dynamic";
 
-const DesktopLayout = dynamic(() => import("../components/layout"));
-const MobileLayout = dynamic(() => import("../components/mobileLayout"));
+const DesktopLayout = dynamic(() => import("../../components/layout"));
+const MobileLayout = dynamic(() => import("../../components/mobileLayout"));
 
-import { getStrapiURL } from "../lib/strapi";
+import { getStrapiURL } from "../..lib/strapi";
 
 const Upload = ({ useragent }) => {
   const formRef = useRef(null);
@@ -69,16 +69,16 @@ const Upload = ({ useragent }) => {
         request.open("POST", `${getStrapiURL()}/videos`);
 
         request.send(formData);
-    }
-    else {
-        console.log("Must submit file");
+
+        setFile(null);
+        setTitle("");
+        setDescription("");
     }
 }
   useEffect(() => {
     if (formRef.current) {
       formRef.current.addEventListener("submit", handleSubmit)
     }
-
     return () => formRef.current.removeEventListener("submit", handleSubmit) 
   }, [formRef.current]);
   return (
@@ -87,25 +87,43 @@ const Upload = ({ useragent }) => {
         <MobileLayout></MobileLayout>
       ) : (
         <DesktopLayout>
-            <div className="flex flex-col items-center justify-center min-w-full min-h-[90vh]">
-          <form ref={formRef}>
-            <input
-              type="text"
-              name="title"
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <input
-              type="text"
-              name="description"
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <input
-              type="file"
-              name="original"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
-            <input type="submit" value="Submit" />
-          </form>
+          <div className="flex flex-col items-center justify-center min-w-full min-h-[90vh]">
+            <form
+              ref={formRef}
+              className="flex flex-col items-center justify-center w-full space-y-4"
+            >
+              <div className="flex flex-col items-center justify-center w-full my-4 space-y-4">
+                <label className="font-bold text-center text-black">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  className="w-2/3 px-2 font-bold bg-lemon-meringue ring-2 ring-black"
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col items-center justify-center w-full my-4 space-y-4">
+                <label className="font-bold text-center text-black">
+                  Description
+                </label>
+                <textarea
+                  className="w-2/3 px-2 font-bold bg-lemon-meringue ring-2 ring-black"
+                  col={60}
+                  rows={5}
+                  name="description"
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+              <input
+                type="file"
+                name="original"
+                className='w-24 bg-black rounded text-lemon-meringue active:scale-75'
+                placeholder='Video'
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+              <input className='w-24 bg-black rounded text-lemon-meringue active:scale-75' type="submit" value="Submit" disabled={!file} />
+            </form>
           </div>
         </DesktopLayout>
       )}
