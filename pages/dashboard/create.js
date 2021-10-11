@@ -13,7 +13,6 @@ const DesktopLayout = dynamic(() => import("../../components/layout"));
 const MobileLayout = dynamic(() => import("../../components/mobileLayout"));
 
 import { getStrapiURL } from "../../lib/strapi";
-import { NFTCredential } from 'avalanche/dist/apis/avm';
 
 const Create = ({ useragent }) => {
   const formRef = useRef(null);
