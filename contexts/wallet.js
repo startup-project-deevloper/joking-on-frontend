@@ -11,7 +11,7 @@ import { getNextURL } from "../lib/next";
 import { Provider } from "../node_modules/next-auth/client";
 import { getAvaxRPCURL } from "../lib/avalanche";
 
-export const WalletContext = createContext({});
+export const WalletContext = createContext({})
 
 
 export const WalletProvider = ({ children }) => {
