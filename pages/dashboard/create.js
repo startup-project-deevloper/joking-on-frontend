@@ -31,8 +31,8 @@ const Create = ({ useragent }) => {
   }
 
   useEffect(async () => {
-    if (false !== (await isUserLoggedIn())) {
-      router.push("/login");
+    if (false === (await isUserLoggedIn())) {
+     // router.push("/login");
     }
 
     if(videos === null) {

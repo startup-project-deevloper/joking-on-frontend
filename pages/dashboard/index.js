@@ -22,8 +22,8 @@ function Dashboard({ useragent }) {
     ua = useUserAgent(useragent);
   }
    useEffect(async () => {
-     if (false !== (await isUserLoggedIn())) {
-       router.push("/login");
+     if (false === (await isUserLoggedIn())) {
+      //router.push("/login");
      }
 
      if (!useragent) {
@@ -52,7 +52,7 @@ function Dashboard({ useragent }) {
                 </a>
               </Link>
               <Link
-                href="/dashboard//create"
+                href="/dashboard/create"
                 className="flex w-2/3 sm:w-1/2 lg:w-1/6"
               >
                 <a className="w-full px-4 py-2 text-center bg-black rounded text-lemon-meringue active:scale-75">

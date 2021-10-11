@@ -29,8 +29,8 @@ const Upload = ({ useragent }) => {
   }
 
   useEffect(async () => {
-    if (false !== (await isUserLoggedIn())) {
-      router.push("/login");
+    if (false === (await isUserLoggedIn())) {
+      //router.push("/login");
     }
 
     if (!useragent) {
@@ -65,11 +65,15 @@ const Upload = ({ useragent }) => {
         }
 
         formData.append("data", JSON.stringify(data));
-
+        try{
         request.open("POST", `${getStrapiURL()}/videos`);
 
         request.send(formData);
+        } catch(e) {
+          console.log(e)
+        }
 
+        
         setFile(null);
         setTitle("");
         setDescription("");
@@ -79,7 +83,7 @@ const Upload = ({ useragent }) => {
     if (formRef.current) {
       formRef.current.addEventListener("submit", handleSubmit)
     }
-    return () => formRef.current.removeEventListener("submit", handleSubmit) 
+    return () => formRef.current ? formRef.current.removeEventListener("submit", handleSubmit) : null 
   }, [formRef.current]);
   return (
     <>
