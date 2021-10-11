@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import { Magic } from "magic-sdk";
 import { AvalancheExtension } from "@magic-ext/avalanche";
-import { Avalanche, BinTools, Buffer, BN } from "avalanche";
 import { useRouter } from "next/router";
 import parseCookies from "../utils/parseCookies";
 import axios from "axios";
