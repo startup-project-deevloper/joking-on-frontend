@@ -25,6 +25,7 @@
     "@testing-library/user-event": "^12.1.10",
     "@use-gesture/react": "^10.0.0-beta.22",
     "avalanche": "^3.9.1",
+    "canvas": "^2.8.0",
     "cloudinary-react": "^1.7.0",
     "cookie-cutter": "^0.2.0",
     "cookies": "^0.8.0",
