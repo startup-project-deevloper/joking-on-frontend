@@ -5,7 +5,6 @@ import { withRouter, useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 
-import { LOGO } from "../constrants";
 import { getStrapiURL } from "../lib/strapi";
 
 const Login = () => {
