@@ -1,100 +1,163 @@
 import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import axios from "axios";
+import {getStrapiURL} from '../lib/strapi';
 import { AuthContext } from "./auth";
 
 export const LaughContext = createContext(null);
 
 export const LaughProvider = ({ children }) => {
-  const { user, beforeLogout, setBeforeLogout } = useContext(AuthContext);
+  const { user, beforeLogout, setBeforeLogout, getToken } = useContext(AuthContext);
+  
+  const [focalPoint, setFocalPoint] = useState(null);
+  const [getStreamTime, setGetStreamTime] = useState(new Date().now());
+
   const [record, setRecord] = useState();
   const [stop, setStop] = useState();
-  const [getStreamTime, setGetStreamTime] = useState();
   const [remove, setRemove] = useState();
   const [save, setSave] = useState();
+
+  const [timer, setTimer] = useState(null);
+
   const [session, setSession] = useState({
-    session: { id: 0, user: { id: 0 }, sessionNouce: "" },
+    session: { id: 0, user: { id: 0 }, sessionNonce: "" },
   });
-  const [recorder, setRecorder] = useState(null);
+
   const [currentPreppedStrapiLaughPoint, setCurrentPreppedStrapiLaughPoint] =
     useState(null);
 
   const finalizeSession = useCallback(async () => {
     stop();
     save();
+
     setSession({ session: { isFinished: true, ...session } });
-    await axios.put(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughSessions/${session.id}`,
-      session
-    );
-    disposeOfUnusedStrapiLaughPoint();
-    setCurrentPreppedStrapiLaughPoint(null);
-    setSession({
-      session: { id: 0, user: { id: 0 }, sessionNouce: "", pipeId: 0 },
+
+    await axios({
+      method: "put",
+      url: getStrapiURL(`laughSessions/${session.id}`),
+      data: { session: session },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await getToken()}`,
+      },
     });
+
+    disposeOfUnusedStrapiLaughPoint();
+
+    setCurrentPreppedStrapiLaughPoint(null);
+
+    setSession({
+      session: { id: 0, user: { id: 0 }, sessionNonce: "", pipeId: 0 },
+    });
+    
     remove();
-  }, [setSession, session]);
+  }, [
+    setSession,
+    setCurrentPreppedStrapiLaughPoint,
+    session,
+    stop,
+    save,
+    remove,
+    disposeOfUnusedStrapiLaughPoint,
+    getToken,
+  ]);
 
   setBeforeLogout([...beforeLogout, finalizeSession]);
 
   const initializeSession = useCallback(async () => {
-    try{
-    record();
-    setSession(
-      (
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughSessions`,
-          { user: user.id }
-        )
-      ).data.session[0]
-    );
-        } catch(err){
-            console.log(err)
-        }
-  }, []);
+      try{
+        record();
+        setSession(
+          (
+            await axios({
+              method: "post",
+              url: getStrapiURL(`laughSessions`),
+              data: { user: user.id },
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${await getToken()}`,
+              },
+            })
+          ).data.session[0]
+        );
+      } catch(err){
+          console.log(err)
+      }
+  }, [user, record, setSession]);
 
   const updateSession = useCallback(async () => {
-    await axios.put(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughSessions/${session.id}`,
-      session
-    );
-  }, []);
+    if(focalPoint) {
+      await axios({
+        method: "put",
+        url: getStrapiURL(`laughSessions/${session.id}`),
+        data: {session:session, focalPoint: focalPoint.id},
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        }
+      });
+    }
+  }, [session, getToken, focalPoint]);
 
   const prepStrapiLaughPoint = useCallback(async () => {
     try{
-    return await axios.post(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughPoints`,
-      { session: session.id, user: user.id }
-    );
+      return await axios({
+        method: "post",
+        url: getStrapiURL(`laughPoints`),
+        data: { session: session.id, user: user.id },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
     } catch(e){
       console.log(e);
     }
-  }, []);
+  }, [session, user, getToken]);
 
   const checkHasLaughedAtBefore = useCallback(async (video) => {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughPoints?user=${user.id}&video=${video.id}`
-    );
+    const { data } = await axios({
+      method: 'get',
+      url: getStrapiURL(`laughPoints?user=${user.id}&video=${video.id}`),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${await getToken()}`,
+      },
+      data: { focalPoint: focalPoint.id } ,
+    });
     return data.length > 0;
-  }, []);
+  }, [user, getToken, focalPoint]);
 
   const submitCurrentPreppedStrapiLaughPoint = useCallback(async () => {
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughPoints`,
-      currentPreppedStrapiLaughPoint
-    );
-    setCurrentPreppedStrapiLaughPoint(null);
-    prepareNextStrapiLaughPoint();
-  }, []);
+    if(focalPoint) {
+      await axios({
+        method: "put",
+        url: getStrapiURL(`laughPoints/${currentPreppedStrapiLaughPoint.id}`),
+        data: { ...currentPreppedStrapiLaughPoint, focalPoint: focalPoint.id },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+      setCurrentPreppedStrapiLaughPoint(
+        (await prepStrapiLaughPoint()).data.laughPoint[0]
+      );
+    }
+  }, [currentPreppedStrapiLaughPoint, focalPoint, getToken, prepStrapiLaughPoint, setCurrentPreppedStrapiLaughPoint]);
 
   const disposeOfUnusedStrapiLaughPoint = useCallback(async () => {
     currentPreppedStrapiLaughPoint
-      ? await axios.delete(
-          `${process.env.NEXT_PUBLIC_STRAPI_URL}/laughPoints/${currentPreppedStrapiLaughPoint.id}`
-        )
+      ? await axios({
+          method: "delete",
+          url: getStrapiURL(`laughPoints/${currentPreppedStrapiLaughPoint.id}`),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await getToken()}`,
+          }
+      })
       : null;
-  }, [currentPreppedStrapiLaughPoint]);
+  }, [currentPreppedStrapiLaughPoint, getToken]);
 
-  useEffect(async() => {
+  useEffect(async () => {
     if (session.pipeId === 0) {
       PipeSDK.insert(
         "PipeSDK",
@@ -104,7 +167,7 @@ export const LaughProvider = ({ children }) => {
           showMenu: "false",
           mrt: 30000,
           ao: 1,
-          payload: { sessionNouce: session.sessionNouce, user: user.id },
+          payload: { sessionNonce: session.sessionNonce, user: {id: user.id} },
         },
         function (recorder) {
           recorder.onReadyToRecord = function (id) {
@@ -120,30 +183,37 @@ export const LaughProvider = ({ children }) => {
         }
       );
     }
+
     if (session.id === 0) {
-      initializeSession();
+      await initializeSession();
     } else if (!currentPreppedStrapiLaughPoint) {
       setCurrentPreppedStrapiLaughPoint(
         (await prepStrapiLaughPoint()).data.laughPoint[0]
       );
     }
 
-    let timer;
-    if (session.id !== 0) {
+    if (session.id !== 0 || !timer) {
       timer = setTimeout(() => {
-        finalizeSession();
+        await finalizeSession();
+        setTimer(null);
       }, 30000);
     }
 
     return () => {
-      clearTimeout(timer);
+      if(timer) {
+        clearTimeout(timer);
+      }
+      setFocalPoint(null);
     };
-  }, [user, currentPreppedStrapiLaughPoint, session]);
+  }, [user, currentPreppedStrapiLaughPoint, timer, focalPoint, setTimer, prepStrapiLaughPoint, finalizeSession, setCurrentPreppedStrapiLaughPoint, getStreamTime, initializeSession, session]);
 
   return (
     <LaughContext.Provider
       value={{
         session,
+        focalPoint,
+        setFocalPoint,
+        updateSession,
         currentPreppedStrapiLaughPoint,
         submitCurrentPreppedStrapiLaughPoint,
         checkHasLaughedAtBefore,
