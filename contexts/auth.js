@@ -1,18 +1,20 @@
 import { createContext, useState, useEffect, useCallback } from "react";
-import { Magic } from "magic-sdk";
-import { AvalancheExtension } from "@magic-ext/avalanche";
-import { useRouter } from "next/router";
-import parseCookies from "../utils/parseCookies";
 import axios from "axios";
-import { getStrapiURL } from "../lib/strapi";
+
+import { Magic } from "magic-sdk";
+import { PolkadotExtension } from "@magic-ext/polkadot";
+
+import { useRouter } from "next/router";
+
+import parseCookies from "../utils/parseCookies";
 import { useCookies } from 'react-cookie';
 
 export const AuthContext = createContext(null);
 
-let magic;
-
 const userSkeleton = {
   username: "",
+  email: "",
+  phone: "",
   firstName: "",
   lastName: "",
   confirmed: false,
@@ -24,11 +26,16 @@ const userSkeleton = {
     {
       name: "",
       publicKey: "",
-      type: "",
     },
   ],
   profilePhoto: {
-    url: "",
+    id: 0,
+    original: {
+      url: "",
+    },
+    dreamed: {
+      url: "",
+    }
   },
   nonfungibleTokens: [],
   links: [],
@@ -48,107 +55,102 @@ const userSkeleton = {
   isSetup: false,
 };
 
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(userSkeleton);
-  const router = useRouter();
+  const [userCookie, setUserCookie] = useCookies("user");
   const [magic, setMagic] = useState(null);
   const [magicTimer, setMagicTimer] = useState(null);
-  const [beforeLogout, setBeforeLogout] = useState([]);
   const [magicCookie, setMagicCookie] = useCookies("magic");
-  const [userCookie, setUserCookie] = useCookies("user");
-  
-  /**
-   * Log the user in
-   * @param {string} email
-   */
-  const loginUser = useCallback(async (email) => {
-    let u;
-    try {
 
-        const did = await magic.auth.loginWithMagicLink({ email: email });
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [beforeLogout, setBeforeLogout] = useState([]);
+  
+  const router = useRouter();
+
+  const loginUser = useCallback(async (email = null, phone = null) => {
+    try {
+        let did;
+
+        if(email) {
+          did = await magic.auth.loginWithMagicLink({ email: email });
+        } else {
+          did = await magic.auth.loginWithSMS({ phoneNumber: phone });
+        }
         
-        parseCookies(
-          (await axios({
-            method: "post",
-            url: `${
-              process.env.NEXT_PUBLIC_MODE === "production"
-                ? "https://app.jokingon.com/api/login"
-                : "http://localhost:3000/api/login"
-            }`,
-            headers: { Authorization: `Bearer ${await getToken()}` },
-          })
-        ).data.cookieArray, ["magic","user"]
-      );
-        if (!userCookie?.user.isSetup) {
-          setUser(userCookie.user);
+        const u = await axios({
+              method: "post",
+              url: getNextURL("api/login"),
+              headers: { Authorization: `Bearer ${did}` },
+              data: {
+                identifier: email ?? phone
+              },
+        });
+
+        if(u.status === 200) {
+          parseCookies(
+            u.data.cookieArray,
+            ["magic","user"]
+          );
+
+          setUser(u.data.user);
+
           router.push({
-            path: "/setup",
+            path: "/",
           });
+        } else {
+          if (!u.data?.user?.isSetup && (await magic.auth.isUserLoggedIn())) {
+            setUser(u.data?.user);
+            setUserCookie({user: u.data?.user});
+            setMagicCookie({token: await getToken()});
+            router.push({
+              path: "/setup",
+            });
+          } else {
+            setErrorMessage(u.data?.message);
+            if(await magic.auth.isUserLoggedIn()){
+              await magic.auth.logout();
+            }
+          }
         }
       } catch (e) {
         console.log(e)
       }
-      
-      router.push({
-        path: "/",
-      });
-    
   }, [magic]);
 
-  /**
-   * Log the user out
-   */
   const logoutUser = useCallback(async () => {
     beforeLogout.map((fn) => fn());
     try {
       await magic.user.logout();
       setUser(userSkeleton);
-      setUserCookie("user", undefined);
-      setStrapiCookie("strapi", undefined);
+      setUserCookie(undefined);
+      setMagicCookie(undefined);
       router.push("/login");
-    } catch (err) {
-      console.log(err);
+    } catch (e) {
+      console.log(e);
     }
-  });
+  }, [beforeLogout, magic, router]);
 
-  /**
-   * Retrieve Magic Issued Bearer Token
-   * This allows User to make authenticated requests
-   */
   const getToken = useCallback(async () => {
     try {
       const token = await magic.user.getIdToken();
       console.log(token);
       return token;
-    } catch (err) {
-      console.log(err);
-      return null;
+    } catch (e) {
+      console.log(e);
     }
-  });
+    return null;
+  }, [magic]);
 
-
-  const customNodeOptions = {
-    rpcUrl:
-      "https://avax-mainnet.gateway.pokt.network/v1/lb/6158adc924faff00344dc9fa",
-    chainId: 43114,
-  };
-  /**
-   * Reload user login on app refresh
-   */
   useEffect(async () => {
     if (magic === null) {
       setMagic(
         new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY, {
           extensions: {
-            xchain: new AvalancheExtension({
+            polkadot: new PolkadotExtension({
               rpcUrl:
-                "https://avax-mainnet.gateway.pokt.network/v1/lb/6158adc924faff00344dc9fa",
-              chainId: "X",
-              networkId: 1, // Avalanche networkId
+                "wss://kusama-rpc.polkadot.io/",
             }),
           },
-          network: customNodeOptions,
         })
       );
     }
@@ -164,36 +166,41 @@ export const AuthProvider = ({ children }) => {
       }, 900))
     }
     
-    if ((user.username !== "" || !userCookie?.user) && magicCookie?.token && magic && !magic.auth.isUserLoggedIn) {
+    if ((user.username !== "" || !userCookie?.user) && magicCookie?.token && magic && !magic.auth.isUserLoggedIn && magicTimer) {
       if (user.username === "" & userCookie?.user) {
-        setUser(userCookie.user);
+        try {
+          await magic.auth.loginWithCredentials(magicCookie.token);
+          setUser(userCookie.user);
+        } catch (e) {
+          console.log(e);
+        }
        } else if (user.username !== "") {
         try {
-          magic.auth.loginWithCredentials(magicCookie.token);
-          parseCookies(
-            (
-              await axios({
+          await magic.auth.loginWithCredentials(magicCookie.token);
+          const u = await axios({
                 method: "post",
-                url: `${
-                  process.env.NEXT_PUBLIC_MODE === "production"
-                    ? "https://app.jokingon.com/api/login"
-                    : "http://localhost:3000/api/login"
-                }`,
-                headers: { Authorization: `Bearer ${await magicCookie.token}` },
-              })
-            ).data.cookieArray,
-            ["magic", "user"],
-          );
+                url: getNextURL("/api/login"),
+                headers: { Authorization: `Bearer ${magicCookie.token}` },
+                data: {
+                  identifier: user.username
+                },
+            });
           if (u.status === 200) {
-            setUser(u.data);
-            setUserCookie(u.data);
+            parseCookies(u.data.cookieArray, ["magic", "user"]);
+            setUser(u.data.user);
           }
         } catch (e) {
           console.log(e);
         }
       }
     }
-  }, [magic, user, userCookie, magicCookie, magicTimer]);
+
+    return () => {
+      if(magicTimer) {
+        clearTimeout(magicTimer)
+      }
+    };
+  }, [magic, user, userCookie, magicCookie, getToken, magicTimer]);
 
   return (
     <AuthContext.Provider
@@ -202,6 +209,7 @@ export const AuthProvider = ({ children }) => {
         logoutUser,
         loginUser,
         getToken,
+        errorMessage,
         magic,
         beforeLogout,
         setBeforeLogout,

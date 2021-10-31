@@ -737,6 +737,11 @@
   resolved "https://registry.yarnpkg.com/@magic-ext/avalanche/-/avalanche-0.1.0.tgz#1f4b2fb8ade1d5ef1018105bdec526d81ca1ecba"
   integrity sha512-nZM427JFoxkS8g/1WV3w+5Qyg0njN5JYTdrsb6eabu8uxCY3G2KagjhPcfOcZcH31ANKIwLD5eoPffGQ6bFdPg==
 
+"@magic-ext/polkadot@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@magic-ext/polkadot/-/polkadot-0.1.2.tgz#e59653bdbeb9660519b64f84e36b7ce23df0ee0f"
+  integrity sha512-YrZ9uDCY+UtUBs4T9hxjDm9przDqIGIutqlZUFEclFihi1x/h5ZWSz4h++oVicKRWRmP0nzsFeXkUlTCD5+SjQ==
+
 "@magic-sdk/admin@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@magic-sdk/admin/-/admin-1.3.0.tgz#08d53aa39f94090221999be60660bdc50b8e6e12"
