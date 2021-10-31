@@ -2,28 +2,30 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { withRouter, useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import useAuth from "../hooks/useAuth";
 
-import { getStrapiURL } from "../lib/strapi";
-
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const { user, loginUser, isUserLoggedIn, getStrapiToken } = useAuth();
+  const [input, setInput] = useState("");
+  const { user, loginUser, isUserLoggedIn } = useAuth();
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    loginUser(email);
-  };
+    if((String(input)).includes("@")){
+      loginUser(input, null);
+    } else {
+      loginUser(null, input);
+    }
+  }, [input, loginUser]);
 
   useEffect(async () => {
-  if (typeof window !== "undefined") {
-    if (false !== (await isUserLoggedIn())) {
-      router.push("/");
+    if (typeof window !== "undefined") {
+      if (false !== (await isUserLoggedIn())) {
+        router.push("/");
+      }
     }
-  }
-  }, [user]);
+  }, [user, isUserLoggedIn, router]);
 
   return (
     <div>
@@ -46,9 +48,9 @@ const Login = () => {
         >
           <input
             className="my-4 text-center placeholder-black rounded outline-none ring-2 ring-black bg-lemon-meringue"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
             type="email"
-            placeholder="Email"
+            placeholder="Email or Phone Number"
           />
           <button
             className="w-24 py-2 bg-black rounded text-lemon-meringue active:scale-75"

@@ -9,7 +9,7 @@ import { getStrapiURL } from "../lib/strapi";
 import { useCookies } from "react-cookie";
 import { getNextURL } from "../lib/next";
 import { Provider } from "../node_modules/next-auth/client";
-import { getAvaxRPCURL } from "../lib/avalanche";
+import { getAvaxRPCURL } from "../lib/polkadot";
 
 export const WalletContext = createContext({})
 

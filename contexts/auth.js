@@ -3,11 +3,14 @@ import axios from "axios";
 
 import { Magic } from "magic-sdk";
 import { PolkadotExtension } from "@magic-ext/polkadot";
+import { getPolkadotRPCURL } from "../lib/polkadot";
 
 import { useRouter } from "next/router";
 
 import parseCookies from "../utils/parseCookies";
 import { useCookies } from 'react-cookie';
+
+import { getNextURL } from "../lib/next";
 
 export const AuthContext = createContext(null);
 
@@ -146,10 +149,12 @@ export const AuthProvider = ({ children }) => {
       setMagic(
         new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLIC_KEY, {
           extensions: {
+            /** 
             polkadot: new PolkadotExtension({
               rpcUrl:
-                "wss://kusama-rpc.polkadot.io/",
+                getPolkadotRPCURL(),
             }),
+            */
           },
         })
       );
