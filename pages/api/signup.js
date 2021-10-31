@@ -1,5 +1,7 @@
 import { Magic } from "@magic-sdk/admin";
+
 import axios from "axios";
+
 import { getStrapiURL } from "../../lib/strapi";
 
 let magic = new Magic(process.env.MAGIC_SECRET_KEY);
@@ -71,7 +73,7 @@ const Signup = withSession(wrapper(async (req, res) => {
         status: "error",
         message: verify.error,
       });
-      
+
       res.status(422).end()
     }
 
