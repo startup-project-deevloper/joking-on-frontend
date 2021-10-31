@@ -67,6 +67,11 @@ const Signup = withSession(wrapper(async (req, res) => {
         res.status(422).end();
       }
     } else {
+      res.json({
+        status: "error",
+        message: verify.error,
+      });
+      
       res.status(422).end()
     }
 
