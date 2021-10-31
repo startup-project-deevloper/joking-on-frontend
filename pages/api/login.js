@@ -12,11 +12,11 @@ const Login = withSession(wrapper(async (req, res) => {
 
   const did = await magic.utils.parseAuthorizationHeader(req.headers.authorization);
   const user = await magic.users.getMetadataByToken(did);
-  
-  let u;
-  
+
   const verify = await axios({method:'post', url: getStrapiURL("users/verify/"), data: JSON.stringify({identifier: user.email || user.phoneNumber ? req.data.identifier : null}), headers:{"Content-Type": 'application/json', authorization: `Bearer ${process.env.NEXT_JWT}`}})
   
+  let u;
+
   if(verify.status === 200) {
     const token = req.headers.authorization.substring(7);
     u = (
