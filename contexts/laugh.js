@@ -5,11 +5,15 @@ import { AuthContext } from "./auth";
 
 export const LaughContext = createContext(null);
 
+const sessionSkeleton = {
+  session: { id: 0, user: { id: 0 }, sessionNonce: "" },
+};
+
 export const LaughProvider = ({ children }) => {
   const { user, beforeLogout, setBeforeLogout, getToken } = useContext(AuthContext);
   
   const [focalPoint, setFocalPoint] = useState(null);
-  const [getStreamTime, setGetStreamTime] = useState(new Date().now());
+  const [getStreamTime, setGetStreamTime] = useState(null);
 
   const [record, setRecord] = useState();
   const [stop, setStop] = useState();
@@ -18,9 +22,7 @@ export const LaughProvider = ({ children }) => {
 
   const [timer, setTimer] = useState(null);
 
-  const [session, setSession] = useState({
-    session: { id: 0, user: { id: 0 }, sessionNonce: "" },
-  });
+  const [session, setSession] = useState(sessionSkeleton);
 
   const [currentPreppedStrapiLaughPoint, setCurrentPreppedStrapiLaughPoint] =
     useState(null);
@@ -45,9 +47,7 @@ export const LaughProvider = ({ children }) => {
 
     setCurrentPreppedStrapiLaughPoint(null);
 
-    setSession({
-      session: { id: 0, user: { id: 0 }, sessionNonce: "", pipeId: 0 },
-    });
+    setSession(sessionSkeleton);
     
     remove();
   }, [
@@ -66,6 +66,7 @@ export const LaughProvider = ({ children }) => {
   const initializeSession = useCallback(async () => {
       try{
         record();
+        
         setSession(
           (
             await axios({
@@ -80,7 +81,7 @@ export const LaughProvider = ({ children }) => {
           ).data.session[0]
         );
       } catch(err){
-          console.log(err)
+        console.log(err)
       }
   }, [user, record, setSession]);
 
