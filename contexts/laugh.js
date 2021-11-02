@@ -9,16 +9,20 @@ const sessionSkeleton = {
   session: { id: 0, user: { id: 0 }, sessionNonce: "" },
 };
 
+const functionSkeleton = () => {
+  return null;
+}
+
 export const LaughProvider = ({ children }) => {
   const { user, beforeLogout, setBeforeLogout, getToken } = useContext(AuthContext);
   
   const [focalPoint, setFocalPoint] = useState(null);
   const [getStreamTime, setGetStreamTime] = useState(null);
 
-  const [record, setRecord] = useState();
-  const [stop, setStop] = useState();
-  const [remove, setRemove] = useState();
-  const [save, setSave] = useState();
+  const [record, setRecord] = useState(functionSkeleton);
+  const [stop, setStop] = useState(functionSkeleton);
+  const [remove, setRemove] = useState(functionSkeleton);
+  const [save, setSave] = useState(functionSkeleton);
 
   const [timer, setTimer] = useState(null);
 
@@ -26,42 +30,6 @@ export const LaughProvider = ({ children }) => {
 
   const [currentPreppedStrapiLaughPoint, setCurrentPreppedStrapiLaughPoint] =
     useState(null);
-
-  const finalizeSession = useCallback(async () => {
-    stop();
-    save();
-
-    setSession({ session: { isFinished: true, ...session } });
-
-    await axios({
-      method: "put",
-      url: getStrapiURL(`laughSessions/${session.id}`),
-      data: { session: session },
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await getToken()}`,
-      },
-    });
-
-    disposeOfUnusedStrapiLaughPoint();
-
-    setCurrentPreppedStrapiLaughPoint(null);
-
-    setSession(sessionSkeleton);
-    
-    remove();
-  }, [
-    setSession,
-    setCurrentPreppedStrapiLaughPoint,
-    session,
-    stop,
-    save,
-    remove,
-    disposeOfUnusedStrapiLaughPoint,
-    getToken,
-  ]);
-
-  setBeforeLogout([...beforeLogout, finalizeSession]);
 
   const initializeSession = useCallback(async () => {
       try{
@@ -158,46 +126,92 @@ export const LaughProvider = ({ children }) => {
       : null;
   }, [currentPreppedStrapiLaughPoint, getToken]);
 
-  useEffect(async () => {
-    if (session.pipeId === 0) {
-      PipeSDK.insert(
-        "PipeSDK",
-        {
-          accountHash: process.env.NEXT_PUBLIC_PIPE_ACCOUNT_HASH,
-          eid: 1,
-          showMenu: "false",
-          mrt: 30000,
-          ao: 1,
-          payload: { sessionNonce: session.sessionNonce, user: {id: user.id} },
+  const finalizeSession = useCallback(async () => {
+    try {
+      stop();
+      save();
+
+      setSession({ session: { isFinished: true, ...session } });
+
+      await axios({
+        method: "put",
+        url: getStrapiURL(`laughSessions/${session.id}`),
+        data: { session: session },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await getToken()}`,
         },
-        function (recorder) {
-          recorder.onReadyToRecord = function (id) {
-            setRecord(() => recorder.record());
-            setStop(() => recorder.stop());
-            setGetStreamTime(() => recorder.getStreamTime());
-            setSave(() => recorder.save());
-            setRemove(() => {
-              recorder.remove();
-            });
-            setSession({ session: { pipeId: id, ...session } });
-          };
-        }
-      );
-    }
+      });
 
-    if (session.id === 0) {
-      await initializeSession();
-    } else if (!currentPreppedStrapiLaughPoint) {
-      setCurrentPreppedStrapiLaughPoint(
-        (await prepStrapiLaughPoint()).data.laughPoint[0]
-      );
-    }
+      disposeOfUnusedStrapiLaughPoint();
 
-    if (session.id !== 0 || !timer) {
-      timer = setTimeout(() => {
-        await finalizeSession();
-        setTimer(null);
-      }, 30000);
+      setCurrentPreppedStrapiLaughPoint(null);
+
+      setSession(sessionSkeleton);
+
+      remove();
+    } catch (e) {
+      console.log(e);
+    }
+  }, [
+    setSession,
+    setCurrentPreppedStrapiLaughPoint,
+    session,
+    stop,
+    save,
+    remove,
+    disposeOfUnusedStrapiLaughPoint,
+    getToken,
+  ]);
+
+  useEffect(async () => { 
+    if (user.id !== 0) {
+      if (session.id === 0) {
+        setBeforeLogout([...beforeLogout, finalizeSession]);
+      }
+    }
+    
+    if(user.id !== 0) {
+      if (session.pipeId === 0) {
+        PipeSDK.insert(
+          "PipeSDK",
+          {
+            accountHash: process.env.NEXT_PUBLIC_PIPE_ACCOUNT_HASH,
+            eid: 1,
+            showMenu: "false",
+            mrt: 30000,
+            ao: 1,
+            payload: { sessionNonce: session.sessionNonce, user: {id: user.id} },
+          },
+          function (recorder) {
+            recorder.onReadyToRecord = function (id) {
+              setRecord(() => recorder.record());
+              setStop(() => recorder.stop());
+              setGetStreamTime(() => recorder.getStreamTime());
+              setSave(() => recorder.save());
+              setRemove(() => {
+                recorder.remove();
+              });
+              setSession({ session: { pipeId: id, ...session } });
+            };
+          }
+        );
+      }
+
+      if (session.id === 0) {
+        await initializeSession();
+      } else if (!currentPreppedStrapiLaughPoint) {
+        setCurrentPreppedStrapiLaughPoint(
+          (await prepStrapiLaughPoint())?.data?.laughPoint[0]
+        );
+      }
+
+      if (session.id !== 0 || !timer && user.id !== 0) {
+        setTimer(setTimeout(async () => {
+          await finalizeSession();
+          setTimer(null);
+        }, 30000));
+      }
     }
 
     return () => {
